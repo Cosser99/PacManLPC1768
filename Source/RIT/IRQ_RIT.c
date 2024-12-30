@@ -38,6 +38,7 @@ extern int mapmat[MAXCASELLA][NUMY]; //mapmatrix
 extern uint16_t bitmap_pac[16];
 	extern int into_down;
 
+
 int checkposition()
 {
 	
@@ -104,8 +105,8 @@ int checkbutton()
 
 void RIT_IRQHandler (void)
 {					
-	//button
-
+	//
+	//UpdateText();
 	//Joystick : 26 sotto , 27 sinistra , 28 destra , 29 sopra
 	int moving=0;	//evita il lampeggio di pacman
 	static int up=0;

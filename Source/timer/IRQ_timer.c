@@ -28,6 +28,7 @@
 
 extern GINFO Session;
 extern uint16_t bitmap_pac[16];
+extern uint8_t bitmap_superpill[8];
 extern int mapmat[MAXCASELLA][NUMY];
 volatile uint8_t gameover=0;
 	
@@ -66,14 +67,17 @@ void TIMER0_IRQHandler (void)
 		uint8_t txt[3];
 		sprintf(txt,"%d",Session.time);
 		GUI_Text(100,0,txt,White,Black);
-		//timer 1 for SuperPills
 		/*
-		init_timer(1,GenRandom2(50));
-		enable_timer(1);
+		if(Session.superpills>0)
+		{
+		init_timer(2,0x00000FFF);
+		enable_timer(2);
+		}
 		*/
+		
 	}
   LPC_TIM0->IR = 1;			/* clear interrupt flag */
-	UpdateText2();
+	//UpdateText2();
   return;
 }
 
@@ -90,24 +94,33 @@ void TIMER0_IRQHandler (void)
 
 void TIMER1_IRQHandler (void)
 {
-	//Spawn Super Pill
-	/*
-	if(!Session.gameover&&!Session.paused&&Session.superpills>0)
-	{
-		int inserita=0;
-			int x=GenRandom2(MAXCASELLA);
-			int y=GenRandom2(NUMY);
-			if(mapmat[x][y]==2)
-			{
-				Session.superpills--;
-				mapmat[x][y]=3;
-				inserita=1;
-			}
-	}
-	*/
+	UpdateText2();
+	
   LPC_TIM1->IR = 1;			/* clear interrupt flag */
   return;
 }
+void TIMER2_IRQHandler (void)
+{
+	//Spawn Super Pill
+	
+	if(!Session.gameover&&!Session.paused&&Session.superpills>0)
+	{
+			int inserita=0;
+			int x=GenRandom2(MAXCASELLA);
+			int y=GenRandom2(NUMY);
+		if(mapmat[x][y]==2)
+			{
+				Session.superpills--;
+				mapmat[x][y]=3;
+				LCD_DrawCircle(x*SIZEBLOCK,y*SIZEBLOCK,Red,8,bitmap_superpill);
+				inserita=1;
+			}
+	}
+	if(Session.superpills<=0) disable_timer(2);
+	LPC_TIM2->IR = 1;	
+	return;
+}
+	
 
 /******************************************************************************
 **                            End Of File

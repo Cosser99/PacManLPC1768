@@ -78,10 +78,11 @@ void DrawPills()
 {
 	int i;
 	int num=NUMPILLS;
-	for(i=0;i<MAXCASELLA&&num>=0;i++)
+	for(i=0;i<MAXCASELLA&&num>0;i++)
 	{
+		
 		int j;
-		for(j=0;j<NUMY;j++)
+		for(j=0;j<NUMY&&num>0;j++)
 		{
 			if(mapmat[i][j]==1)
 			{
@@ -131,7 +132,7 @@ void GenSuperPill()
 		}
 	}while(counter !=0);
 }
-int main(void)
+int main(void) 
 	{
 	//
 		GM_Default(&Session);
@@ -163,13 +164,16 @@ int main(void)
 	//17D 7840
 	init_timer(0, 0x017D7840 ); 						    // 8us * 25MHz = 200 ~= 0xC8 
 	joystick_init();											//Joystick Initialization            
-	init_RIT(0x004C4B40);									// RIT Initialization 50 msec       	
-	//init_RIT(0x003C4B40);
+	init_RIT(0x002C4B40);									// RIT Initialization 50 msec   
+	init_timer(1,0x002C4B40);							//Timer for score
+	init_timer(2,0x009FFFFF);
+	//init_RIT(0x003C4B40); //0x004C4B40
 	enable_RIT();													// RIT enabled												
 	enable_timer(0);
+	enable_timer(1);
+	enable_timer(2);
 	
-	
-	GenSuperPill();
+	//GenSuperPill();
 	SetPrio();  //altrimenti non funziona bene il rit
 	LPC_SC->PCON |= 0x1;									// power-down	mode										
 	LPC_SC->PCON &= ~(0x2);						
