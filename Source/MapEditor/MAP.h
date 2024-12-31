@@ -17,18 +17,18 @@ struct PLAYER
 {
 	uint8_t x;
 	uint8_t y;
-	uint16_t score;
+	uint8_t lx;  //last position
+	uint8_t ly; 
 };
 //Setter Getter
 uint8_t GetX(Player x);
 uint8_t GetY(Player x);
-uint8_t GetScore(Player x);
 //setter
 void SetX(Player x,uint8_t value);
 void SetY(Player x,uint8_t value);
-void SetScore(Player x,uint8_t value);
 
-
+void Path(Player *pacman,Player *blinky);
+uint8_t Next(Player *pacman,Player *blinky); //return dir 0sotto 1 destra 2 sopra 3 sinistra
 
 //
 

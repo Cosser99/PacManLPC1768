@@ -627,6 +627,11 @@
               <FileType>1</FileType>
               <FilePath>.\Source\MapEditor\Map.c</FilePath>
             </File>
+            <File>
+              <FileName>PQ.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\MapEditor\PQ.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1273,6 +1278,11 @@
               <FileName>Map.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\MapEditor\Map.c</FilePath>
+            </File>
+            <File>
+              <FileName>PQ.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\MapEditor\PQ.c</FilePath>
             </File>
           </Files>
         </Group>

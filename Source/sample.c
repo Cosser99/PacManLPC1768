@@ -42,6 +42,7 @@ extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emul
 //
 #define NUMPILLS 240
 extern Player pac;
+extern Player ghost;
 extern uint16_t bitmap_pac[16];
 extern uint8_t bitmapcircle[8];
 extern uint8_t bitmap_superpill[8];
@@ -133,7 +134,7 @@ void GenSuperPill()
 	}while(counter !=0);
 }
 int main(void) 
-	{
+{
 	//
 		GM_Default(&Session);
 	//
@@ -155,9 +156,10 @@ int main(void)
 	pac.y=Session.spy;
 	ConfigMap();
 	DrawPills();
-	DrawPac(pac.x,pac.y,bitmapcircle);
-	
-	//LCD_DrawCircle(pac.x,pac.y,Yellow,8,bitmapcircle);
+	ghost.x=18;
+	ghost.y=29;
+	LCD_DrawBlock2(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,8,Red);
+	LCD_DrawCircle(pac.x,pac.y,Yellow,8,bitmapcircle);
 		//init_timer(0, 0x1312D0 ); 						// 50ms * 25MHz = 1.25*10^6 = 0x1312D0 
 		//init_timer(0, 0x6108 ); 						  // 1ms * 25MHz = 25*10^3 = 0x6108 
 		//init_timer(0, 0x4E2 ); 						    // 500us * 25MHz = 1.25*10^3 = 0x4E2 

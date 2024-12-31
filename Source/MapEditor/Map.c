@@ -1,25 +1,23 @@
 #include "Map.h"
-
-
+#include <math.h>
+#include "PQ.h"
 //Mappa
 // X : 240 Y: 320
 
 
 
 int mapmat[MAXCASELLA][NUMY]={0}; //mapmatrix
-
-
 uint32_t LASTBIT=2147483648;
+//
 Player pac;
+Player ghost;
 //Questo in bit rappresentano dove disegnare il punto
 //Setter Getter
 uint8_t GetX(Player x){return x.x;}
 uint8_t GetY(Player x){return x.y;}
-uint8_t GetScore(Player x){return x.score;}
 //setter
 void SetX(Player x,uint8_t value){x.x=value;}
 void SetY(Player x,uint8_t value){x.y=value;}
-void SetScore(Player x,uint8_t value){x.score=value;}
 
 uint8_t bitmappills[8]=
 {
@@ -32,6 +30,17 @@ uint8_t bitmappills[8]=
 	0,
 	0
 	
+};
+uint8_t bitmap_ghost[8]=
+{
+24,
+60,
+	126,
+	90,
+	126,
+	126,
+	90,
+	0
 };
 uint8_t bitmapcircle[8]=
 {
@@ -118,4 +127,49 @@ uint32_t bitmap_map[NUMY]={
 0 ,
 0 ,
 0 };
+//
 
+//Funzioni
+uint16_t Distance(int x1,int y1,int x2,int y2)
+{
+	int a,b;
+	if(x2<x1) a=x1-x2;
+	else a=x2-x1;
+	
+	if(y2<y1) b=y1-y2;
+		else b=y2-y1;
+	
+	return sqrt(a*a+b*b);
+}
+//Variabili
+PriorityQueue openSet;
+uint8_t comeFrom[30];
+uint8_t dist[MAXCASELLA][NUMY]={2000}; //matrice distanze
+//
+void Path(Player *pacman,Player *blinky) //start blinky end pacman
+{
+		
+}
+
+uint8_t Next(Player *pacman,Player *blinky) //return dir 0sotto 1 destra 2 sopra 3 sinistra
+{
+	uint8_t distv[4]={100,100,100,100}; //Distance vector
+	int x,y;
+	x=blinky->x;
+	y=blinky->y;
+	uint8_t mindir=100;
+	if(mapmat[x][y+1]!=0&&!(blinky->lx==x&&blinky->ly==(y+1))){distv[0]=Distance(x,y+1,pac.x,pac.y);}//sotto
+	if(mapmat[x+1][y]!=0&&!(blinky->lx==(x+1)&&blinky->ly==y)){distv[1]=Distance(x+1,y,pac.x,pac.y);}//destra
+	if(mapmat[x][y-1]!=0&&!(blinky->lx==x&&blinky->ly==(y-1))){distv[2]=Distance(x,y-1,pac.x,pac.y);}//sopra
+	if(mapmat[x-1][y]!=0&&!(blinky->lx==(x-1)&&blinky->ly==y)){distv[3]=Distance(x-1,y,pac.x,pac.y);}//sinistra
+	int i;
+	int index=-1;
+	for(i=0;i<4;i++) {
+	if(distv[i]<mindir)
+		{
+			mindir=distv[i];
+			index=i;
+		}
+	}
+	return index;
+}

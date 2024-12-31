@@ -30,13 +30,15 @@ volatile uint8_t dir=0;
 volatile uint8_t pressed=0;
 
 extern Player pac;
+extern Player ghost;
 extern GINFO Session;
 extern uint8_t bitmapcircle[8];
 extern uint8_t bitmap_superpill[8];
 extern uint32_t bitmap_map[NUMY];
 extern int mapmat[MAXCASELLA][NUMY]; //mapmatrix
 extern uint16_t bitmap_pac[16];
-	extern int into_down;
+extern int into_down;
+extern uint8_t bitmap_ghost[8];
 
 
 int checkposition()
@@ -111,8 +113,11 @@ void RIT_IRQHandler (void)
 	int moving=0;	//evita il lampeggio di pacman
 	static int up=0;
 	static int position=0;	
+	
 	int lx=pac.x;//lastpos
 	int ly=pac.y; 
+	ghost.lx=ghost.x;
+	ghost.ly=ghost.y;
 	if(!Session.gameover&&!Session.paused)
 	{
 		checkposition();
@@ -140,7 +145,19 @@ void RIT_IRQHandler (void)
 			DrawPac( pac.x, pac.y,bitmapcircle);
 			LCD_DrawBlock2(lx*8,ly*8,8,Blue);
 		}
-		
+		//************GHOST MOVEMENT******************
+		uint8_t movement=Next(&pac,&ghost);
+			switch(movement)
+			{
+				case 0:ghost.y++;  break;
+				case 1:ghost.x++;break;
+				case 2:ghost.y--;break;
+				case 3:ghost.x--;break;
+				default: break;
+			}
+			//Draw
+			LCD_DrawCircle(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,Red,8,bitmap_ghost);
+			LCD_DrawBlock2(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);	//TODO: ricordare lo stato
 	}
 	//****************VICTORY***********************
 	if(Session.pills<=0&&!Session.gameover)
