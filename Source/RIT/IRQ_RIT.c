@@ -32,13 +32,16 @@ volatile uint8_t pressed=0;
 extern Player pac;
 extern Player ghost;
 extern GINFO Session;
+//bitmap
 extern uint8_t bitmapcircle[8];
 extern uint8_t bitmap_superpill[8];
 extern uint32_t bitmap_map[NUMY];
-extern int mapmat[MAXCASELLA][NUMY]; //mapmatrix
-extern uint16_t bitmap_pac[16];
-extern int into_down;
 extern uint8_t bitmap_ghost[8];
+extern uint8_t bitmappills[8];
+extern uint16_t bitmap_pac[16];
+//
+extern int mapmat[MAXCASELLA][NUMY]; //mapmatrix
+extern int into_down;
 
 
 int checkposition()
@@ -116,8 +119,6 @@ void RIT_IRQHandler (void)
 	
 	int lx=pac.x;//lastpos
 	int ly=pac.y; 
-	ghost.lx=ghost.x;
-	ghost.ly=ghost.y;
 	if(!Session.gameover&&!Session.paused)
 	{
 		checkposition();
@@ -146,6 +147,11 @@ void RIT_IRQHandler (void)
 			LCD_DrawBlock2(lx*8,ly*8,8,Blue);
 		}
 		//************GHOST MOVEMENT******************
+		static nextframe=0;
+		if(nextframe==0)	//muovere il fantasimo la meta del tempo
+		{
+			ghost.lx=ghost.x;
+			ghost.ly=ghost.y;
 		uint8_t movement=Next(&pac,&ghost);
 			switch(movement)
 			{
@@ -156,8 +162,25 @@ void RIT_IRQHandler (void)
 				default: break;
 			}
 			//Draw
+			switch(mapmat[ghost.lx][ghost.ly])
+			{
+				case 1:LCD_DrawBlock2(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);	break;
+				case 2:LCD_DrawBlock2(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);
+					LCD_DrawCircle(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,Red,8,bitmappills);
+								
+				break;
+				case 3:
+						LCD_DrawBlock2(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);
+						LCD_DrawCircle(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,Red,8,bitmap_superpill);	
+					
+				break;
+				default: break;
+			}
 			LCD_DrawCircle(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,Red,8,bitmap_ghost);
-			LCD_DrawBlock2(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);	//TODO: ricordare lo stato
+			//LCD_DrawBlock2(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);	
+
+		}
+		nextframe=!nextframe;
 	}
 	//****************VICTORY***********************
 	if(Session.pills<=0&&!Session.gameover)

@@ -151,6 +151,9 @@ void Path(Player *pacman,Player *blinky) //start blinky end pacman
 		
 }
 
+static uint8_t lastpx=0;
+static uint8_t lastpy=0;
+
 uint8_t Next(Player *pacman,Player *blinky) //return dir 0sotto 1 destra 2 sopra 3 sinistra
 {
 	uint8_t distv[4]={100,100,100,100}; //Distance vector
@@ -158,10 +161,10 @@ uint8_t Next(Player *pacman,Player *blinky) //return dir 0sotto 1 destra 2 sopra
 	x=blinky->x;
 	y=blinky->y;
 	uint8_t mindir=100;
-	if(mapmat[x][y+1]!=0&&!(blinky->lx==x&&blinky->ly==(y+1))){distv[0]=Distance(x,y+1,pac.x,pac.y);}//sotto
-	if(mapmat[x+1][y]!=0&&!(blinky->lx==(x+1)&&blinky->ly==y)){distv[1]=Distance(x+1,y,pac.x,pac.y);}//destra
-	if(mapmat[x][y-1]!=0&&!(blinky->lx==x&&blinky->ly==(y-1))){distv[2]=Distance(x,y-1,pac.x,pac.y);}//sopra
-	if(mapmat[x-1][y]!=0&&!(blinky->lx==(x-1)&&blinky->ly==y)){distv[3]=Distance(x-1,y,pac.x,pac.y);}//sinistra
+	if(mapmat[x][y+1]!=0&&!(lastpx==x&&lastpy==(y+1))){distv[0]=Distance(x,y+1,pac.x,pac.y);}//sotto
+	if(mapmat[x+1][y]!=0&&!(lastpx==(x+1)&&lastpy==y)){distv[1]=Distance(x+1,y,pac.x,pac.y);}//destra
+	if(mapmat[x][y-1]!=0&&!(lastpx==x&&lastpy==(y-1))){distv[2]=Distance(x,y-1,pac.x,pac.y);}//sopra
+	if(mapmat[x-1][y]!=0&&!(lastpx==(x-1)&&lastpy==y)){distv[3]=Distance(x-1,y,pac.x,pac.y);}//sinistra
 	int i;
 	int index=-1;
 	for(i=0;i<4;i++) {
@@ -171,5 +174,7 @@ uint8_t Next(Player *pacman,Player *blinky) //return dir 0sotto 1 destra 2 sopra
 			index=i;
 		}
 	}
+	lastpx=blinky->x;
+	lastpy=blinky->y;
 	return index;
 }

@@ -158,15 +158,14 @@ int main(void)
 	DrawPills();
 	ghost.x=18;
 	ghost.y=29;
-	LCD_DrawBlock2(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,8,Red);
-	LCD_DrawCircle(pac.x,pac.y,Yellow,8,bitmapcircle);
+	LCD_DrawCircle(pac.x,pac.y,Yellow,8,bitmap_pac);
 		//init_timer(0, 0x1312D0 ); 						// 50ms * 25MHz = 1.25*10^6 = 0x1312D0 
 		//init_timer(0, 0x6108 ); 						  // 1ms * 25MHz = 25*10^3 = 0x6108 
 		//init_timer(0, 0x4E2 ); 						    // 500us * 25MHz = 1.25*10^3 = 0x4E2 
 	//17D 7840
 	init_timer(0, 0x017D7840 ); 						    // 8us * 25MHz = 200 ~= 0xC8 
 	joystick_init();											//Joystick Initialization            
-	init_RIT(0x002C4B40);									// RIT Initialization 50 msec   
+	init_RIT(0x003C4B40);									// RIT Initialization 50 msec   
 	init_timer(1,0x002C4B40);							//Timer for score
 	init_timer(2,0x009FFFFF);
 	//init_RIT(0x003C4B40); //0x004C4B40
