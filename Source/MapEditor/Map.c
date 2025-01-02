@@ -1,6 +1,6 @@
 #include "Map.h"
 #include <math.h>
-#include "PQ.h"
+#include <stdlib.h>
 //Mappa
 // X : 240 Y: 320
 
@@ -132,19 +132,24 @@ uint32_t bitmap_map[NUMY]={
 //Funzioni
 uint16_t Distance(int x1,int y1,int x2,int y2)
 {
+
 	int a,b;
 	if(x2<x1) a=x1-x2;
 	else a=x2-x1;
 	
 	if(y2<y1) b=y1-y2;
 		else b=y2-y1;
-	
+		//Euclidea
 	return sqrt(a*a+b*b);
+	//Manatthan
+	//return abs(x1-x2)+abs(y1-y2);
 }
 //Variabili
+/*
 PriorityQueue openSet;
 uint8_t comeFrom[30];
 uint8_t dist[MAXCASELLA][NUMY]={2000}; //matrice distanze
+*/
 //
 void Path(Player *pacman,Player *blinky) //start blinky end pacman
 {
@@ -154,19 +159,26 @@ void Path(Player *pacman,Player *blinky) //start blinky end pacman
 static uint8_t lastpx=0;
 static uint8_t lastpy=0;
 
+extern uint8_t mode;
 uint8_t Next(Player *pacman,Player *blinky) //return dir 0sotto 1 destra 2 sopra 3 sinistra
 {
+	uint8_t tx=pacman->x;	//target position (i ghost nel gioco originale giravano in loop per delle zone)
+	uint8_t ty=pacman->y;
 	uint8_t distv[4]={100,100,100,100}; //Distance vector
+	uint8_t cango[4]={0,0,0,0};
 	int x,y;
 	x=blinky->x;
 	y=blinky->y;
 	uint8_t mindir=100;
-	if(mapmat[x][y+1]!=0&&!(lastpx==x&&lastpy==(y+1))){distv[0]=Distance(x,y+1,pac.x,pac.y);}//sotto
-	if(mapmat[x+1][y]!=0&&!(lastpx==(x+1)&&lastpy==y)){distv[1]=Distance(x+1,y,pac.x,pac.y);}//destra
-	if(mapmat[x][y-1]!=0&&!(lastpx==x&&lastpy==(y-1))){distv[2]=Distance(x,y-1,pac.x,pac.y);}//sopra
-	if(mapmat[x-1][y]!=0&&!(lastpx==(x-1)&&lastpy==y)){distv[3]=Distance(x-1,y,pac.x,pac.y);}//sinistra
-	int i;
+	uint8_t maxdir=0;
 	int index=-1;
+	switch(mode){
+	case 0: //if(Distance(x,y,pac.x,pac.y)<10){tx=pacman->x;ty=pacman->y;}
+	if(mapmat[x][y+1]!=0&&!(lastpx==x&&lastpy==(y+1))){distv[0]=Distance(x,y+1,tx,ty);}//sotto
+	if(mapmat[x+1][y]!=0&&!(lastpx==(x+1)&&lastpy==y)){distv[1]=Distance(x+1,y,tx,ty);}//destra
+	if(mapmat[x][y-1]!=0&&!(lastpx==x&&lastpy==(y-1))){distv[2]=Distance(x,y-1,tx,ty);}//sopra
+	if(mapmat[x-1][y]!=0&&!(lastpx==(x-1)&&lastpy==y)){distv[3]=Distance(x-1,y,tx,ty);}//sinistra
+	int i;
 	for(i=0;i<4;i++) {
 	if(distv[i]<mindir)
 		{
@@ -176,5 +188,26 @@ uint8_t Next(Player *pacman,Player *blinky) //return dir 0sotto 1 destra 2 sopra
 	}
 	lastpx=blinky->x;
 	lastpy=blinky->y;
+	
+			break;
+		case 1: 
+	if(mapmat[x][y+1]!=0){distv[0]=Distance(x,y+1,tx,ty);cango[0]=1;}//sotto
+	if(mapmat[x+1][y]!=0){distv[1]=Distance(x+1,y,tx,ty);cango[1]=1;}//destra
+	if(mapmat[x][y-1]!=0){distv[2]=Distance(x,y-1,tx,ty);cango[2]=1;}//sopra
+	if(mapmat[x-1][y]!=0){distv[3]=Distance(x-1,y,tx,ty);cango[3]=1;}//sinistra
+	for(i=0;i<4;i++) {
+	if(distv[i]>maxdir&&cango[i]==1)
+		{
+			maxdir=distv[i];
+			index=i;
+		}
+	}
+	lastpx=blinky->x;
+	lastpy=blinky->y;
+	
+			
+		break;
+}
+	
 	return index;
 }

@@ -32,6 +32,7 @@ volatile uint8_t pressed=0;
 extern Player pac;
 extern Player ghost;
 extern GINFO Session;
+extern uint8_t mode;
 //bitmap
 extern uint8_t bitmapcircle[8];
 extern uint8_t bitmap_superpill[8];
@@ -63,6 +64,7 @@ int checkposition()
 		Session.netscore+=50;
 		Session.pills=Session.pills-1;
 		mapmat[x][y]=1;
+		mode=1;//cambia mod
 	}
 	//****************TELETRASPORTO**********
 	if(pac.x==0&&dir==4) {LCD_DrawBlock2(pac.x*8,pac.y*8,8,Blue);pac.x=30;}

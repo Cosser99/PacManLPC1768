@@ -19,6 +19,7 @@ struct PLAYER
 	uint8_t y;
 	uint8_t lx;  //last position
 	uint8_t ly; 
+	uint8_t mode; //mode only for ghost 0:chasing 1 : Frightened mode
 };
 //Setter Getter
 uint8_t GetX(Player x);

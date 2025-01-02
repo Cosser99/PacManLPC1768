@@ -30,8 +30,10 @@ extern GINFO Session;
 extern uint16_t bitmap_pac[16];
 extern uint8_t bitmap_superpill[8];
 extern int mapmat[MAXCASELLA][NUMY];
+extern uint8_t mode;
+
 volatile uint8_t gameover=0;
-	
+volatile uint8_t counterf=10; //10 secondi
 void UpdateText2()	//per renderlo più veloce
 {
 	static uint8_t txt[10];
@@ -46,6 +48,7 @@ void UpdateText2()	//per renderlo più veloce
 			LCD_DrawCircle16(50+i*20,300,Yellow,16,bitmap_pac);
 		
 	}
+	
 }
 int GenRandom2(int max)
 {
@@ -76,6 +79,13 @@ void TIMER0_IRQHandler (void)
 		*/
 		
 	}
+	
+	if(mode) //10 secondi
+	{
+		counterf--;
+	}
+	if(counterf<=0){mode=0;counterf=10;}
+	
   LPC_TIM0->IR = 1;			/* clear interrupt flag */
 	//UpdateText2();
   return;

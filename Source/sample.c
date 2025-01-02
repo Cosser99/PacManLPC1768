@@ -53,6 +53,7 @@ extern uint32_t LASTBIT;
 GINFO Session;
 //
 int into_down;
+uint8_t mode=0; //modalità del fantasma in corso
 
 static int cnt1=0;	//DEBUG caselle a 1
 
@@ -158,14 +159,15 @@ int main(void)
 	DrawPills();
 	ghost.x=18;
 	ghost.y=29;
-	LCD_DrawCircle(pac.x,pac.y,Yellow,8,bitmap_pac);
+	ghost.mode=0;
+	LCD_DrawCircle(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,Yellow,8,bitmapcircle);
 		//init_timer(0, 0x1312D0 ); 						// 50ms * 25MHz = 1.25*10^6 = 0x1312D0 
 		//init_timer(0, 0x6108 ); 						  // 1ms * 25MHz = 25*10^3 = 0x6108 
 		//init_timer(0, 0x4E2 ); 						    // 500us * 25MHz = 1.25*10^3 = 0x4E2 
 	//17D 7840
 	init_timer(0, 0x017D7840 ); 						    // 8us * 25MHz = 200 ~= 0xC8 
 	joystick_init();											//Joystick Initialization            
-	init_RIT(0x003C4B40);									// RIT Initialization 50 msec   
+	init_RIT(0x002C4B40);									// RIT Initialization 50 msec   
 	init_timer(1,0x002C4B40);							//Timer for score
 	init_timer(2,0x009FFFFF);
 	//init_RIT(0x003C4B40); //0x004C4B40
