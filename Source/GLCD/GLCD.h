@@ -62,8 +62,7 @@
 #define White          0xFFFF
 #define Black          0x0000
 #define Grey           0xF7DE
-#define Blue           OrigBlue
-#define OrigBlue			 0x001F
+#define Blue           0x001F
 #define Blue2          0x051F
 #define Red            0xF800
 #define Magenta        0xF81F

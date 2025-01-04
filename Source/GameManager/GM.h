@@ -18,6 +18,8 @@ struct INFO
 	//spawnpoint
 	uint8_t spx;
 	uint8_t spy;
+	//
+	uint8_t death;
 	
 };
 void GM_Default(GINFO *info);

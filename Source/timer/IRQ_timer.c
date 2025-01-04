@@ -50,6 +50,13 @@ void UpdateText2()	//per renderlo più veloce
 	}
 	
 }
+void UpdateLives()
+{
+	int i;
+	LCD_DrawBlock2(50+(Session.lives)*20,300,16,Black);
+	for(i=0;i<Session.lives;i++)
+			LCD_DrawCircle16(50+i*20,300,Yellow,16,bitmap_pac);
+}
 int GenRandom2(int max)
 {
 	srand(LPC_TIM1->TC^LPC_RIT->RICOUNTER);
@@ -61,23 +68,42 @@ void GameOver()
 		Session.gameover=1;
 		GUI_Text(MAX_X/2-30,MAX_Y/2-30,(uint8_t*)"GAME OVER",White,Black);
 }
+extern Player pac;
+extern Player ghost;
+void Respawn()
+{
+	
+	UpdateLives();
+	Session.paused=0;
+	Session.death=0;
+	mode=3;	//Animazione respawn ghost
+	LCD_DrawBlock2(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,8,Blue);
+	pac.x=Session.spx;
+	pac.y=Session.spy;
+
+	LCD_DrawCircle(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,Yellow,8,bitmap_pac);
+	
+	
+}
 void TIMER0_IRQHandler (void)
 {
+	static uint8_t dtimer=0;
+	if(dtimer>=2&&Session.death)
+	{
+		if(Session.lives>0)
+			Respawn();
+		else
+			GameOver();
+		dtimer=0;
+	}
+	else dtimer++;
 	if(!Session.gameover&&!Session.paused)
 	{
 		Session.time--;
 		if(Session.time<=0) GameOver();
 		uint8_t txt[3];
 		sprintf(txt,"%d",Session.time);
-		GUI_Text(100,0,txt,White,Black);
-		/*
-		if(Session.superpills>0)
-		{
-		init_timer(2,0x00000FFF);
-		enable_timer(2);
-		}
-		*/
-		
+		GUI_Text(100,0,txt,White,Black);		
 	}
 	
 	if(mode) //10 secondi
@@ -92,27 +118,18 @@ void TIMER0_IRQHandler (void)
 }
 
 
-/******************************************************************************
-** Function name:		Timer1_IRQHandler
-**
-** Descriptions:		Timer/Counter 1 interrupt handler
-**
-** parameters:			None
-** Returned value:		None
-**
-******************************************************************************/
 
 void TIMER1_IRQHandler (void)
 {
 	UpdateText2();
-	
+
   LPC_TIM1->IR = 1;			/* clear interrupt flag */
   return;
 }
 void TIMER2_IRQHandler (void)
 {
 	//Spawn Super Pill
-	
+
 	if(!Session.gameover&&!Session.paused&&Session.superpills>0)
 	{
 			int inserita=0;

@@ -149,7 +149,6 @@ void GenSuperPill()
 }
 int main(void) 
 {
-	Blue;
 	//
 		GM_Default(&Session);
 	//

@@ -46,7 +46,13 @@ extern int into_down;
 //
 static uint8_t frame=0;
 
-
+void Death()
+{
+	Session.lives--;
+	Session.death=1;
+	Session.paused=1;
+	
+}
 int checkposition()
 {
 	
@@ -66,6 +72,7 @@ int checkposition()
 		Session.netscore+=50;
 		Session.pills=Session.pills-1;
 		mapmat[x][y]=1;
+		if(mode!=3)
 		mode=1;//cambia mod
 	}
 	//Se prende il fantasmino
@@ -73,14 +80,18 @@ int checkposition()
 	{
 		switch(mode)
 		{
-			case 0:break;	//IL FANTASMA TI HA PRESO
-			case 1:				//MORTO
+			case 0:			//IL FANTASMA TI HA PRESO
+			if(!Session.death)
+			Death();
+			
+			break;	
+			case 1:				//MUORE IL FANTASMA
 			Session.score+=100;
 			Session.netscore+=100;
 			mode=0;	
 			ghost.x=30;
 			ghost.y=40;
-			mode=3;	//MODALITA ANIMAZIONE
+			mode=3;		//MODALITA ANIMAZIONE
 			break;
 		}
 		

@@ -13,6 +13,8 @@ void GM_Default(GINFO *info)
 	info->pills=0; //le conta lui
 	info->paused=0;
 	info->superpills=6;
+	
+	info->death=0;
 }
 
 void Pause(GINFO *info,int posx,int posy)
