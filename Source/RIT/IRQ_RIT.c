@@ -43,6 +43,8 @@ extern uint16_t bitmap_pac[16];
 //
 extern int mapmat[MAXCASELLA][NUMY]; //mapmatrix
 extern int into_down;
+//
+static uint8_t frame=0;
 
 
 int checkposition()
@@ -65,6 +67,23 @@ int checkposition()
 		Session.pills=Session.pills-1;
 		mapmat[x][y]=1;
 		mode=1;//cambia mod
+	}
+	//Se prende il fantasmino
+	if(x==ghost.x&&y==ghost.y)
+	{
+		switch(mode)
+		{
+			case 0:break;	//IL FANTASMA TI HA PRESO
+			case 1:				//MORTO
+			Session.score+=100;
+			Session.netscore+=100;
+			mode=0;	
+			ghost.x=30;
+			ghost.y=40;
+			mode=3;	//MODALITA ANIMAZIONE
+			break;
+		}
+		
 	}
 	//****************TELETRASPORTO**********
 	if(pac.x==0&&dir==4) {LCD_DrawBlock2(pac.x*8,pac.y*8,8,Blue);pac.x=30;}
@@ -110,6 +129,24 @@ int checkbutton()
 	return 1;
 }
 
+void UpdateAnim()
+{
+	static uint8_t nf=0;
+	
+	if(frame==0)LCD_DrawLine(13*SIZEBLOCK,16*SIZEBLOCK+4,15*SIZEBLOCK,16*SIZEBLOCK+4,Blue);
+	if(frame>=4) {
+		ghost.x=13;ghost.y=15;mode=0;frame=0;
+		LCD_DrawLine(13*SIZEBLOCK,16*SIZEBLOCK+4,15*SIZEBLOCK,16*SIZEBLOCK+4,White);
+	return;}
+	if(nf)
+	{
+	LCD_DrawBlock2(13*SIZEBLOCK,18*SIZEBLOCK-(frame*8)+8,8,Blue);
+	LCD_DrawCircle(13*SIZEBLOCK,18*SIZEBLOCK-frame*8,Red,8,bitmap_ghost);
+	//SetLastPixel(13*SIZEBLOCK,18*SIZEBLOCK-frame*3,lastpixel);
+	frame++;
+	}
+	nf=!nf;
+}
 void RIT_IRQHandler (void)
 {					
 	//
@@ -178,7 +215,13 @@ void RIT_IRQHandler (void)
 				break;
 				default: break;
 			}
-			LCD_DrawCircle(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,Red,8,bitmap_ghost);
+			switch(mode)
+			{
+				case 0:LCD_DrawCircle(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,Red,8,bitmap_ghost); break;
+				case 1:LCD_DrawCircle(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,Blue2,8,bitmap_ghost); break;
+				case 3:UpdateAnim();break;
+			}
+			
 			//LCD_DrawBlock2(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);	
 
 		}

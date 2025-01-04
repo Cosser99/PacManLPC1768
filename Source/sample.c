@@ -57,6 +57,7 @@ uint8_t mode=0; //modalità del fantasma in corso
 
 static int cnt1=0;	//DEBUG caselle a 1
 
+#define TRACECOLOR Blue
 void ConfigMap()
 {
 	int i,j;
@@ -68,13 +69,25 @@ void ConfigMap()
 			if(riga&1)
 			{
 				//disegna quadrato 16x16
-				LCD_DrawBlock2(j*SIZEBLOCK,i*SIZEBLOCK,SIZEBLOCK,Blue); //j sarebbe x sul display , i y 
+				LCD_DrawBlock2(j*SIZEBLOCK,i*SIZEBLOCK,SIZEBLOCK,TRACECOLOR); //j sarebbe x sul display , i y 
 				mapmat[j][i]=1;
 				cnt1++;
 			}
 			riga=riga>>1;
 		}
 	}
+	//tana fantasma e porta		
+	// x10 y17
+	for(i=10;i<18;i++)
+	{
+		for(j=17;j<20;j++)
+		{
+			LCD_DrawBlock2(i*SIZEBLOCK,j*SIZEBLOCK,SIZEBLOCK,TRACECOLOR);
+		}
+	}
+	LCD_DrawBlock2(13*SIZEBLOCK,16*SIZEBLOCK,SIZEBLOCK,TRACECOLOR);
+	LCD_DrawBlock2(14*SIZEBLOCK,16*SIZEBLOCK,SIZEBLOCK,TRACECOLOR);
+	LCD_DrawLine(13*SIZEBLOCK,16*SIZEBLOCK+4,15*SIZEBLOCK,16*SIZEBLOCK+4,White);
 }
 void DrawPills()
 {
@@ -136,6 +149,7 @@ void GenSuperPill()
 }
 int main(void) 
 {
+	Blue;
 	//
 		GM_Default(&Session);
 	//
