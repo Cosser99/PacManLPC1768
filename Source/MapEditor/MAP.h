@@ -7,7 +7,6 @@
 
 #define MAXCASELLA 30
 #define SIZEBLOCK 8
-//#define LASTBIT 2147483648	
 #define NUMY 40
 #define NSUPERPILL 6
 

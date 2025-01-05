@@ -7,7 +7,6 @@
 
 
 int mapmat[MAXCASELLA][NUMY]={0}; //mapmatrix
-uint32_t LASTBIT=2147483648;
 //
 Player pac;
 Player ghost;
@@ -151,10 +150,7 @@ uint8_t comeFrom[30];
 uint8_t dist[MAXCASELLA][NUMY]={2000}; //matrice distanze
 */
 //
-void Path(Player *pacman,Player *blinky) //start blinky end pacman
-{
-		
-}
+
 
 static uint8_t lastpx=0;
 static uint8_t lastpy=0;

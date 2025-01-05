@@ -284,7 +284,7 @@ void RIT_IRQHandler (void)
 			switch(into_down){				
 				case 2:				/* pay attention here: please see slides to understand value 2 */
 					Session.paused=!Session.paused;
-					Pause(&Session,MAX_X/2-20,MAX_Y/2-10);
+					Pause(&Session,MAX_X/2-30,MAX_Y/2-20);
 				break;
 				default:
 					break;

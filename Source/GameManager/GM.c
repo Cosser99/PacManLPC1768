@@ -1,5 +1,4 @@
 #include "GM.h"
-uint16_t buffer[16][150];
 
 void GM_Default(GINFO *info)
 {
@@ -23,31 +22,21 @@ void Pause(GINFO *info,int posx,int posy)
 	int x,y;
 	if(info->paused)
 	{
-		
-		//Salvo i pixel
-
-		for(i=posy,y=0;i<posy+16;i++,y++)
-		{
-			for(j=posx,x=0;j<posx+60;j++,x++)
-			{
-				buffer[y][x]=LCD_GetPoint(j-6,i);
-			}
-		}
 		//Stampo
-	uint8_t testo[15]={"PAUSED"};
-	GUI_Text(MAX_X/2-10,MAX_Y/2-10,testo,White,Black);
+		uint8_t testo[15]={"PAUSED"};
+		GUI_Text(posx,posy,testo,White,Black);
 	}
 	else
 	{
-		//reset
-		for(i=posy,y=0;i<posy+16;i++,y++)
+	//reset
+		for( i=posy;i<posy+16;i++)
 		{
-			for(j=posx,x=0;j<posx+60;j++,x++)
+			for( j=posx;j<posx+50;j++)
 			{
-				LCD_SetPoint(j,i,buffer[y][x]);
+				LCD_SetPoint(j,i,Blue);
 			}
 		}
-	
+		
 	}
 	
 }
