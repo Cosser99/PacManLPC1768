@@ -45,7 +45,7 @@ void UpdateText2()	//per renderlo più veloce
 		Session.lives+=1;
 		int i=0;
 		for(i=0;i<Session.lives;i++)
-			LCD_DrawCircle16(50+i*20,300,Yellow,16,bitmap_pac);
+			LCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);
 		
 	}
 	
@@ -53,13 +53,13 @@ void UpdateText2()	//per renderlo più veloce
 void UpdateLives()
 {
 	int i;
-	LCD_DrawBlock2(50+(Session.lives)*20,300,16,Black);
+	LCD_DrawBlock(50+(Session.lives)*20,300,16,Black);
 	for(i=0;i<Session.lives;i++)
-			LCD_DrawCircle16(50+i*20,300,Yellow,16,bitmap_pac);
+			LCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);
 }
 int GenRandom2(int max)
 {
-	srand(LPC_TIM1->TC^LPC_RIT->RICOUNTER);
+	srand(LPC_TIM1->TC^LPC_RIT->RICOUNTER^LPC_TIM0->TC);
 	return rand()%max;
 }
 
@@ -77,11 +77,11 @@ void Respawn()
 	Session.paused=0;
 	Session.death=0;
 	mode=3;	//Animazione respawn ghost
-	LCD_DrawBlock2(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,8,Blue);
+	LCD_DrawBlock(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,8,Blue);
 	pac.x=Session.spx;
 	pac.y=Session.spy;
 
-	LCD_DrawCircle(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,Yellow,8,bitmap_pac);
+	LCD_Drawbitmap(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,Yellow,8,bitmap_pac);
 	
 	
 }
@@ -105,7 +105,12 @@ void TIMER0_IRQHandler (void)
 		sprintf(txt,"%d",Session.time);
 		GUI_Text(100,0,txt,White,Black);		
 	}
-	
+	if(Session.superpills>0)
+	{
+		init_timer(2,GenRandom2(0x00FFFFFF));
+		LPC_TIM2->TC=0;
+		enable_timer(2);
+	}
 	if(mode) //10 secondi
 	{
 		counterf--;
@@ -139,7 +144,7 @@ void TIMER2_IRQHandler (void)
 			{
 				Session.superpills--;
 				mapmat[x][y]=3;
-				LCD_DrawCircle(x*SIZEBLOCK,y*SIZEBLOCK,Red,8,bitmap_superpill);
+				LCD_Drawbitmap(x*SIZEBLOCK,y*SIZEBLOCK,Red,8,bitmap_superpill);
 				inserita=1;
 			}
 	}

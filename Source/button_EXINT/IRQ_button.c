@@ -24,10 +24,7 @@ void EINT1_IRQHandler (void)	  	/* KEY1														 */
 
 void EINT2_IRQHandler (void)	  	/* KEY2														 */
 {
-	if(LCD_GetPoint(10,10)==Green)
-	{
-		LCD_DrawBlock2(50,50,50,Black);
-	}
+	
   LPC_SC->EXTINT &= (1 << 2);     /* clear pending interrupt         */    
 }
 

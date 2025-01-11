@@ -511,18 +511,8 @@ void LCD_SetPoint(uint16_t Xpos,uint16_t Ypos,uint16_t point)
 * Return         : None
 * Attention		 : None
 *******************************************************************************/	 
-/*
-void LCD_DrawBlock(blck b,uint16_t color)
-{
-	int i=0;
-	for(i=0;i<4;i++)
-	{
-		line x=b.l[i];
-		LCD_DrawLine(x.x1,x.y1,x.x2,x.y2,color);
-	}
-}
-*/
-void LCD_DrawBlock2(uint16_t x,uint16_t y,uint16_t size,uint16_t color)
+
+void LCD_DrawBlock(uint16_t x,uint16_t y,uint16_t size,uint16_t color)
 {
 	int i,j;
 	for( i=0;i<size;i++)
@@ -533,7 +523,7 @@ void LCD_DrawBlock2(uint16_t x,uint16_t y,uint16_t size,uint16_t color)
 		}
 	}
 }
-void LCD_DrawCircle16(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint16_t *bitmap)
+void LCD_Drawbitmap16(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint16_t *bitmap)
 {
 	int dx=x;
 	int dy=y;
@@ -553,7 +543,7 @@ void LCD_DrawCircle16(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint16_t
 	}
 	
 }
-void LCD_DrawCircle(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint8_t *bitmap)
+void LCD_Drawbitmap(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint8_t *bitmap)
 {
 	int dx=x;
 	int dy=y;
@@ -603,7 +593,7 @@ void DrawPac(int x,int y,uint8_t *bitmapcircle)
 {
 	x=x*8;
 	y=y*8;
-	LCD_DrawCircle(x,y,Yellow,8,bitmapcircle);
+	LCD_Drawbitmap(x,y,Yellow,8,bitmapcircle);
 }
 void LCD_DrawLine( uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1 , uint16_t color )
 {

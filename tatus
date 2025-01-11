@@ -1,0 +1,372 @@
+warning: in the working copy of 'sample.uvoptx', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/Source/GLCD/GLCD.c b/Source/GLCD/GLCD.c[m
+[1mindex 189d8cd..73f40cc 100644[m
+[1m--- a/Source/GLCD/GLCD.c[m
+[1m+++ b/Source/GLCD/GLCD.c[m
+[36m@@ -511,18 +511,8 @@[m [mvoid LCD_SetPoint(uint16_t Xpos,uint16_t Ypos,uint16_t point)[m
+ * Return         : None[m
+ * Attention		 : None[m
+ *******************************************************************************/	 [m
+[31m-/*[m
+[31m-void LCD_DrawBlock(blck b,uint16_t color)[m
+[31m-{[m
+[31m-	int i=0;[m
+[31m-	for(i=0;i<4;i++)[m
+[31m-	{[m
+[31m-		line x=b.l[i];[m
+[31m-		LCD_DrawLine(x.x1,x.y1,x.x2,x.y2,color);[m
+[31m-	}[m
+[31m-}[m
+[31m-*/[m
+[31m-void LCD_DrawBlock2(uint16_t x,uint16_t y,uint16_t size,uint16_t color)[m
+[32m+[m
+[32m+[m[32mvoid LCD_DrawBlock(uint16_t x,uint16_t y,uint16_t size,uint16_t color)[m
+ {[m
+ 	int i,j;[m
+ 	for( i=0;i<size;i++)[m
+[36m@@ -533,7 +523,7 @@[m [mvoid LCD_DrawBlock2(uint16_t x,uint16_t y,uint16_t size,uint16_t color)[m
+ 		}[m
+ 	}[m
+ }[m
+[31m-void LCD_DrawCircle16(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint16_t *bitmap)[m
+[32m+[m[32mvoid LCD_Drawbitmap16(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint16_t *bitmap)[m
+ {[m
+ 	int dx=x;[m
+ 	int dy=y;[m
+[36m@@ -553,7 +543,7 @@[m [mvoid LCD_DrawCircle16(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint16_t[m
+ 	}[m
+ 	[m
+ }[m
+[31m-void LCD_DrawCircle(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint8_t *bitmap)[m
+[32m+[m[32mvoid LCD_Drawbitmap(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint8_t *bitmap)[m
+ {[m
+ 	int dx=x;[m
+ 	int dy=y;[m
+[36m@@ -603,7 +593,7 @@[m [mvoid DrawPac(int x,int y,uint8_t *bitmapcircle)[m
+ {[m
+ 	x=x*8;[m
+ 	y=y*8;[m
+[31m-	LCD_DrawCircle(x,y,Yellow,8,bitmapcircle);[m
+[32m+[m	[32mLCD_Drawbitmap(x,y,Yellow,8,bitmapcircle);[m
+ }[m
+ void LCD_DrawLine( uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1 , uint16_t color )[m
+ {[m
+[1mdiff --git a/Source/GLCD/GLCD.h b/Source/GLCD/GLCD.h[m
+[1mindex 47e5bcd..7034a34 100644[m
+[1m--- a/Source/GLCD/GLCD.h[m
+[1m+++ b/Source/GLCD/GLCD.h[m
+[36m@@ -92,15 +92,14 @@[m [mvoid LCD_Initialization(void);[m
+ void LCD_Clear(uint16_t Color);[m
+ uint16_t LCD_GetPoint(uint16_t Xpos,uint16_t Ypos);[m
+ void LCD_SetPoint(uint16_t Xpos,uint16_t Ypos,uint16_t point);[m
+[31m-//void LCD_DrawBlock(blck b,uint16_t color);[m
+[31m-void LCD_DrawBlock2(uint16_t x,uint16_t y,uint16_t size,uint16_t color);[m
+[31m-void LCD_DrawCircle(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint8_t *bitmap);[m
+[32m+[m[32mvoid LCD_DrawBlock(uint16_t x,uint16_t y,uint16_t size,uint16_t color);[m
+[32m+[m[32mvoid LCD_Drawbitmap(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint8_t *bitmap);[m
+ void LCD_DrawLine( uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1 , uint16_t color );[m
+ void PutChar( uint16_t Xpos, uint16_t Ypos, uint8_t ASCI, uint16_t charColor, uint16_t bkColor );[m
+ void GUI_Text(uint16_t Xpos, uint16_t Ypos, uint8_t *str,uint16_t Color, uint16_t bkColor);[m
+ //[m
+ void IntToChar(uint8_t *txt,uint8_t num,uint8_t start);[m
+[31m-void LCD_DrawCircle16(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint16_t *bitmap);[m
+[32m+[m[32mvoid LCD_Drawbitmap16(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint16_t *bitmap);[m
+ #endif [m
+ [m
+ /*********************************************************************************************************[m
+[1mdiff --git a/Source/RIT/IRQ_RIT.c b/Source/RIT/IRQ_RIT.c[m
+[1mindex 0d92434..00fd536 100644[m
+[1m--- a/Source/RIT/IRQ_RIT.c[m
+[1m+++ b/Source/RIT/IRQ_RIT.c[m
+[36m@@ -97,8 +97,8 @@[m [mint checkposition()[m
+ 		[m
+ 	}[m
+ 	//****************TELETRASPORTO**********[m
+[31m-	if(pac.x==0&&dir==4) {LCD_DrawBlock2(pac.x*8,pac.y*8,8,Blue);pac.x=30;}[m
+[31m-	else if(pac.x==29&&dir==2) {LCD_DrawBlock2(pac.x*8,pac.y*8,8,Blue);pac.x=0;}[m
+[32m+[m	[32mif(pac.x==0&&dir==4) {LCD_DrawBlock(pac.x*8,pac.y*8,8,Blue);pac.x=30;}[m
+[32m+[m	[32melse if(pac.x==29&&dir==2) {LCD_DrawBlock(pac.x*8,pac.y*8,8,Blue);pac.x=0;}[m
+ 	//**************************************[m
+ 	if(mapmat[x][y+1]==0) //sotto[m
+ 	{[m
+[36m@@ -151,8 +151,8 @@[m [mvoid UpdateAnim()[m
+ 	return;}[m
+ 	if(nf)[m
+ 	{[m
+[31m-	LCD_DrawBlock2(13*SIZEBLOCK,18*SIZEBLOCK-(frame*8)+8,8,Blue);[m
+[31m-	LCD_DrawCircle(13*SIZEBLOCK,18*SIZEBLOCK-frame*8,Red,8,bitmap_ghost);[m
+[32m+[m	[32mLCD_DrawBlock(13*SIZEBLOCK,18*SIZEBLOCK-(frame*8)+8,8,Blue);[m
+[32m+[m	[32mLCD_Drawbitmap(13*SIZEBLOCK,18*SIZEBLOCK-frame*8,Red,8,bitmap_ghost);[m
+ 	//SetLastPixel(13*SIZEBLOCK,18*SIZEBLOCK-frame*3,lastpixel);[m
+ 	frame++;[m
+ 	}[m
+[36m@@ -194,7 +194,7 @@[m [mvoid RIT_IRQHandler (void)[m
+ 		if(moving)[m
+ 		{[m
+ 			DrawPac( pac.x, pac.y,bitmapcircle);[m
+[31m-			LCD_DrawBlock2(lx*8,ly*8,8,Blue);[m
+[32m+[m			[32mLCD_DrawBlock(lx*8,ly*8,8,Blue);[m
+ 		}[m
+ 		//************GHOST MOVEMENT******************[m
+ 		static nextframe=0;[m
+[36m@@ -214,26 +214,26 @@[m [mvoid RIT_IRQHandler (void)[m
+ 			//Draw[m
+ 			switch(mapmat[ghost.lx][ghost.ly])[m
+ 			{[m
+[31m-				case 1:LCD_DrawBlock2(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);	break;[m
+[31m-				case 2:LCD_DrawBlock2(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);[m
+[31m-					LCD_DrawCircle(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,Red,8,bitmappills);[m
+[32m+[m				[32mcase 1:LCD_DrawBlock(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);	break;[m
+[32m+[m				[32mcase 2:LCD_DrawBlock(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);[m
+[32m+[m					[32mLCD_Drawbitmap(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,Red,8,bitmappills);[m
+ 								[m
+ 				break;[m
+ 				case 3:[m
+[31m-						LCD_DrawBlock2(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);[m
+[31m-						LCD_DrawCircle(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,Red,8,bitmap_superpill);	[m
+[32m+[m						[32mLCD_DrawBlock(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);[m
+[32m+[m						[32mLCD_Drawbitmap(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,Red,8,bitmap_superpill);[m[41m	[m
+ 					[m
+ 				break;[m
+ 				default: break;[m
+ 			}[m
+ 			switch(mode)[m
+ 			{[m
+[31m-				case 0:LCD_DrawCircle(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,Red,8,bitmap_ghost); break;[m
+[31m-				case 1:LCD_DrawCircle(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,Blue2,8,bitmap_ghost); break;[m
+[32m+[m				[32mcase 0:LCD_Drawbitmap(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,Red,8,bitmap_ghost); break;[m
+[32m+[m				[32mcase 1:LCD_Drawbitmap(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,Blue2,8,bitmap_ghost); break;[m
+ 				case 3:UpdateAnim();break;[m
+ 			}[m
+ 			[m
+[31m-			//LCD_DrawBlock2(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);	[m
+[32m+[m			[32m//LCD_DrawBlock(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);[m[41m	[m
+ [m
+ 		}[m
+ 		nextframe=!nextframe;[m
+[36m@@ -248,9 +248,9 @@[m [mvoid RIT_IRQHandler (void)[m
+ 	}[m
+ 	//***********************************************[m
+ 	[m
+[31m-	//LCD_DrawCircle(pac.x/8*8,pac.y/8*8,Blue,8,bitmapcircle);[m
+[31m-	//LCD_DrawCircle(pac.x,pac.y,Yellow,8,bitmapcircle);[m
+[31m-	//LCD_DrawCircle(pac.x,pac.y,Blue,8,bitmapcircle);[m
+[32m+[m	[32m//LCD_Drawbitmap(pac.x/8*8,pac.y/8*8,Blue,8,bitmapcircle);[m
+[32m+[m	[32m//LCD_Drawbitmap(pac.x,pac.y,Yellow,8,bitmapcircle);[m
+[32m+[m	[32m//LCD_Drawbitmap(pac.x,pac.y,Blue,8,bitmapcircle);[m
+ 	if((LPC_GPIO1->FIOPIN & (1<<29)) == 0){	[m
+ 		/* Joytick UP pressed */[m
+ 		//up++;[m
+[1mdiff --git a/Source/button_EXINT/IRQ_button.c b/Source/button_EXINT/IRQ_button.c[m
+[1mindex cb72c06..2044288 100644[m
+[1m--- a/Source/button_EXINT/IRQ_button.c[m
+[1m+++ b/Source/button_EXINT/IRQ_button.c[m
+[36m@@ -24,10 +24,7 @@[m [mvoid EINT1_IRQHandler (void)	  	/* KEY1														 */[m
+ [m
+ void EINT2_IRQHandler (void)	  	/* KEY2														 */[m
+ {[m
+[31m-	if(LCD_GetPoint(10,10)==Green)[m
+[31m-	{[m
+[31m-		LCD_DrawBlock2(50,50,50,Black);[m
+[31m-	}[m
+[32m+[m[41m	[m
+   LPC_SC->EXTINT &= (1 << 2);     /* clear pending interrupt         */    [m
+ }[m
+ [m
+[1mdiff --git a/Source/sample.c b/Source/sample.c[m
+[1mindex c334e9e..c7ffa22 100644[m
+[1m--- a/Source/sample.c[m
+[1m+++ b/Source/sample.c[m
+[36m@@ -69,7 +69,7 @@[m [mvoid ConfigMap()[m
+ 			if(riga&1)[m
+ 			{[m
+ 				//disegna quadrato 16x16[m
+[31m-				LCD_DrawBlock2(j*SIZEBLOCK,i*SIZEBLOCK,SIZEBLOCK,TRACECOLOR); //j sarebbe x sul display , i y [m
+[32m+[m				[32mLCD_DrawBlock(j*SIZEBLOCK,i*SIZEBLOCK,SIZEBLOCK,TRACECOLOR); //j sarebbe x sul display , i y[m[41m [m
+ 				mapmat[j][i]=1;[m
+ 				cnt1++;[m
+ 			}[m
+[36m@@ -82,11 +82,11 @@[m [mvoid ConfigMap()[m
+ 	{[m
+ 		for(j=17;j<20;j++)[m
+ 		{[m
+[31m-			LCD_DrawBlock2(i*SIZEBLOCK,j*SIZEBLOCK,SIZEBLOCK,TRACECOLOR);[m
+[32m+[m			[32mLCD_DrawBlock(i*SIZEBLOCK,j*SIZEBLOCK,SIZEBLOCK,TRACECOLOR);[m
+ 		}[m
+ 	}[m
+[31m-	LCD_DrawBlock2(13*SIZEBLOCK,16*SIZEBLOCK,SIZEBLOCK,TRACECOLOR);[m
+[31m-	LCD_DrawBlock2(14*SIZEBLOCK,16*SIZEBLOCK,SIZEBLOCK,TRACECOLOR);[m
+[32m+[m	[32mLCD_DrawBlock(13*SIZEBLOCK,16*SIZEBLOCK,SIZEBLOCK,TRACECOLOR);[m
+[32m+[m	[32mLCD_DrawBlock(14*SIZEBLOCK,16*SIZEBLOCK,SIZEBLOCK,TRACECOLOR);[m
+ 	LCD_DrawLine(13*SIZEBLOCK,16*SIZEBLOCK+4,15*SIZEBLOCK,16*SIZEBLOCK+4,White);[m
+ }[m
+ void DrawPills()[m
+[36m@@ -102,7 +102,7 @@[m [mvoid DrawPills()[m
+ 			if(mapmat[i][j]==1)[m
+ 			{[m
+ 				//LCD_SetPoint(i*SIZEBLOCK,j*SIZEBLOCK,Yellow); pixel di riferimento[m
+[31m-				LCD_DrawCircle(i*SIZEBLOCK,j*SIZEBLOCK,Red,8,bitmappills);[m
+[32m+[m				[32mLCD_Drawbitmap(i*SIZEBLOCK,j*SIZEBLOCK,Red,8,bitmappills);[m
+ 				mapmat[i][j]=2;[m
+ 				Session.pills++;[m
+ 				num--;[m
+[36m@@ -142,7 +142,7 @@[m [mvoid GenSuperPill()[m
+ 		if(mapmat[x][y]==2)[m
+ 		{[m
+ 			mapmat[x][y]=3;[m
+[31m-			LCD_DrawCircle(x*SIZEBLOCK,y*SIZEBLOCK,Red,8,bitmap_superpill);[m
+[32m+[m			[32mLCD_Drawbitmap(x*SIZEBLOCK,y*SIZEBLOCK,Red,8,bitmap_superpill);[m
+ 			counter--;[m
+ 		}[m
+ 	}while(counter !=0);[m
+[36m@@ -160,7 +160,7 @@[m [mint main(void)[m
+ [m
+ //				LCD_SetPoint(16,10,Green);		//X offseet +6	Y normale , GetPoint(10,10,Green)[m
+ //				LCD_SetPoint(20,1,Black);[m
+[31m-//				if(LCD_GetPoint(20-6,1)==Black) LCD_DrawBlock2(0,100,20,Black);[m
+[32m+[m[32m//				if(LCD_GetPoint(20-6,1)==Black) LCD_DrawBlock(0,100,20,Black);[m
+ [m
+ [m
+ 	LCD_Clear(Black);[m
+[36m@@ -173,7 +173,7 @@[m [mint main(void)[m
+ 	ghost.x=18;[m
+ 	ghost.y=29;[m
+ 	ghost.mode=0;[m
+[31m-	LCD_DrawCircle(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,Yellow,8,bitmapcircle);[m
+[32m+[m	[32mLCD_Drawbitmap(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,Yellow,8,bitmapcircle);[m
+ 		//init_timer(0, 0x1312D0 ); 						// 50ms * 25MHz = 1.25*10^6 = 0x1312D0 [m
+ 		//init_timer(0, 0x6108 ); 						  // 1ms * 25MHz = 25*10^3 = 0x6108 [m
+ 		//init_timer(0, 0x4E2 ); 						    // 500us * 25MHz = 1.25*10^3 = 0x4E2 [m
+[36m@@ -182,13 +182,10 @@[m [mint main(void)[m
+ 	joystick_init();											//Joystick Initialization            [m
+ 	init_RIT(0x002C4B40);									// RIT Initialization 50 msec   [m
+ 	init_timer(1,0x002C4B40);							//Timer for score[m
+[31m-	init_timer(2,0x009FFFFF);[m
+ 	//init_RIT(0x003C4B40); //0x004C4B40[m
+ 	enable_RIT();													// RIT enabled												[m
+ 	enable_timer(0);[m
+ 	enable_timer(1);[m
+[31m-	enable_timer(2);[m
+[31m-	[m
+ 	//GenSuperPill();[m
+ 	SetPrio();  //altrimenti non funziona bene il rit[m
+ 	LPC_SC->PCON |= 0x1;									// power-down	mode										[m
+[36m@@ -196,11 +193,11 @@[m [mint main(void)[m
+ 		[m
+ 	static uint8_t a[7]={"Lives:"};[m
+ 	GUI_Text(0,300,a,White,Black);[m
+[31m-	LCD_DrawCircle16(50,300,Yellow,16,bitmap_pac);[m
+[32m+[m	[32mLCD_Drawbitmap16(50,300,Yellow,16,bitmap_pac);[m
+ 	[m
+[31m-//	LCD_DrawCircle16(10,10,Yellow,16,bitmap_pac);[m
+[31m-//	LCD_DrawCircle16(18,100,Yellow,16,bitmap_pac);[m
+[31m-//	LCD_DrawCircle16(26,100,Yellow,16,bitmap_pac);[m
+[32m+[m[32m//	LCD_Drawbitmap16(10,10,Yellow,16,bitmap_pac);[m
+[32m+[m[32m//	LCD_Drawbitmap16(18,100,Yellow,16,bitmap_pac);[m
+[32m+[m[32m//	LCD_Drawbitmap16(26,100,Yellow,16,bitmap_pac);[m
+   while (1)	[m
+   {[m
+ 		__ASM("wfi");[m
+[1mdiff --git a/Source/timer/IRQ_timer.c b/Source/timer/IRQ_timer.c[m
+[1mindex cdd96e4..6d4fbf5 100644[m
+[1m--- a/Source/timer/IRQ_timer.c[m
+[1m+++ b/Source/timer/IRQ_timer.c[m
+[36m@@ -45,7 +45,7 @@[m [mvoid UpdateText2()	//per renderlo pi[m
+ 		Session.lives+=1;[m
+ 		int i=0;[m
+ 		for(i=0;i<Session.lives;i++)[m
+[31m-			LCD_DrawCircle16(50+i*20,300,Yellow,16,bitmap_pac);[m
+[32m+[m			[32mLCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);[m
+ 		[m
+ 	}[m
+ 	[m
+[36m@@ -53,13 +53,13 @@[m [mvoid UpdateText2()	//per renderlo pi[m
+ void UpdateLives()[m
+ {[m
+ 	int i;[m
+[31m-	LCD_DrawBlock2(50+(Session.lives)*20,300,16,Black);[m
+[32m+[m	[32mLCD_DrawBlock(50+(Session.lives)*20,300,16,Black);[m
+ 	for(i=0;i<Session.lives;i++)[m
+[31m-			LCD_DrawCircle16(50+i*20,300,Yellow,16,bitmap_pac);[m
+[32m+[m			[32mLCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);[m
+ }[m
+ int GenRandom2(int max)[m
+ {[m
+[31m-	srand(LPC_TIM1->TC^LPC_RIT->RICOUNTER);[m
+[32m+[m	[32msrand(LPC_TIM1->TC^LPC_RIT->RICOUNTER^LPC_TIM0->TC);[m
+ 	return rand()%max;[m
+ }[m
+ [m
+[36m@@ -77,11 +77,11 @@[m [mvoid Respawn()[m
+ 	Session.paused=0;[m
+ 	Session.death=0;[m
+ 	mode=3;	//Animazione respawn ghost[m
+[31m-	LCD_DrawBlock2(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,8,Blue);[m
+[32m+[m	[32mLCD_DrawBlock(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,8,Blue);[m
+ 	pac.x=Session.spx;[m
+ 	pac.y=Session.spy;[m
+ [m
+[31m-	LCD_DrawCircle(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,Yellow,8,bitmap_pac);[m
+[32m+[m	[32mLCD_Drawbitmap(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,Yellow,8,bitmap_pac);[m
+ 	[m
+ 	[m
+ }[m
+[36m@@ -105,7 +105,12 @@[m [mvoid TIMER0_IRQHandler (void)[m
+ 		sprintf(txt,"%d",Session.time);[m
+ 		GUI_Text(100,0,txt,White,Black);		[m
+ 	}[m
+[31m-	[m
+[32m+[m	[32mif(Session.superpills>0)[m
+[32m+[m	[32m{[m
+[32m+[m		[32minit_timer(2,GenRandom2(0x00FFFFFF));[m
+[32m+[m		[32mLPC_TIM2->TC=0;[m
+[32m+[m		[32menable_timer(2);[m
+[32m+[m	[32m}[m
+ 	if(mode) //10 secondi[m
+ 	{[m
+ 		counterf--;[m
+[36m@@ -139,7 +144,7 @@[m [mvoid TIMER2_IRQHandler (void)[m
+ 			{[m
+ 				Session.superpills--;[m
+ 				mapmat[x][y]=3;[m
+[31m-				LCD_DrawCircle(x*SIZEBLOCK,y*SIZEBLOCK,Red,8,bitmap_superpill);[m
+[32m+[m				[32mLCD_Drawbitmap(x*SIZEBLOCK,y*SIZEBLOCK,Red,8,bitmap_superpill);[m
+ 				inserita=1;[m
+ 			}[m
+ 	}[m
+[1mdiff --git a/Source/timer/lib_timer.c b/Source/timer/lib_timer.c[m
+[1mindex 36ec2f7..4c9aa82 100644[m
+[1m--- a/Source/timer/lib_timer.c[m
+[1m+++ b/Source/timer/lib_timer.c[m
+[36m@@ -74,11 +74,17 @@[m [mvoid reset_timer( uint8_t timer_num )[m
+ 	regVal |= 0x02;[m
+ 	LPC_TIM0->TCR = regVal;[m
+   }[m
+[31m-  else[m
+[32m+[m[32m  else if(timer_num==1)[m
+   {[m
+ 	regVal = LPC_TIM1->TCR;[m
+ 	regVal |= 0x02;[m
+ 	LPC_TIM1->TCR = regVal;[m
+[32m+[m[32m  }[m
+[32m+[m	[32melse if(timer_num==2)[m
+[32m+[m[32m  {[m
+[32m+[m	[32mregVal = LPC_TIM2->TCR;[m
+[32m+[m	[32mregVal |= 0x02;[m
+[32m+[m	[32mLPC_TIM1->TCR = regVal;[m
+   }[m
+   return;[m
+ }[m
+[1mdiff --git a/sample.uvoptx b/sample.uvoptx[m
+[1mindex 780eccf..e6609a0 100644[m
+[1m--- a/sample.uvoptx[m
+[1m+++ b/sample.uvoptx[m
+[36m@@ -339,7 +339,7 @@[m
+           <Type>0</Type>[m
+           <LineNumber>126</LineNumber>[m
+           <EnabledFlag>1</EnabledFlag>[m
+[31m-          <Address>10780</Address>[m
+[32m+[m[32m          <Address>10880</Address>[m
+           <ByteObject>0</ByteObject>[m
+           <HtxType>0</HtxType>[m
+           <ManyObjects>0</ManyObjects>[m

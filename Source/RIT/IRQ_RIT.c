@@ -97,8 +97,8 @@ int checkposition()
 		
 	}
 	//****************TELETRASPORTO**********
-	if(pac.x==0&&dir==4) {LCD_DrawBlock2(pac.x*8,pac.y*8,8,Blue);pac.x=30;}
-	else if(pac.x==29&&dir==2) {LCD_DrawBlock2(pac.x*8,pac.y*8,8,Blue);pac.x=0;}
+	if(pac.x==0&&dir==4) {LCD_DrawBlock(pac.x*8,pac.y*8,8,Blue);pac.x=30;}
+	else if(pac.x==29&&dir==2) {LCD_DrawBlock(pac.x*8,pac.y*8,8,Blue);pac.x=0;}
 	//**************************************
 	if(mapmat[x][y+1]==0) //sotto
 	{
@@ -151,8 +151,8 @@ void UpdateAnim()
 	return;}
 	if(nf)
 	{
-	LCD_DrawBlock2(13*SIZEBLOCK,18*SIZEBLOCK-(frame*8)+8,8,Blue);
-	LCD_DrawCircle(13*SIZEBLOCK,18*SIZEBLOCK-frame*8,Red,8,bitmap_ghost);
+	LCD_DrawBlock(13*SIZEBLOCK,18*SIZEBLOCK-(frame*8)+8,8,Blue);
+	LCD_Drawbitmap(13*SIZEBLOCK,18*SIZEBLOCK-frame*8,Red,8,bitmap_ghost);
 	//SetLastPixel(13*SIZEBLOCK,18*SIZEBLOCK-frame*3,lastpixel);
 	frame++;
 	}
@@ -194,7 +194,7 @@ void RIT_IRQHandler (void)
 		if(moving)
 		{
 			DrawPac( pac.x, pac.y,bitmapcircle);
-			LCD_DrawBlock2(lx*8,ly*8,8,Blue);
+			LCD_DrawBlock(lx*8,ly*8,8,Blue);
 		}
 		//************GHOST MOVEMENT******************
 		static nextframe=0;
@@ -214,26 +214,26 @@ void RIT_IRQHandler (void)
 			//Draw
 			switch(mapmat[ghost.lx][ghost.ly])
 			{
-				case 1:LCD_DrawBlock2(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);	break;
-				case 2:LCD_DrawBlock2(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);
-					LCD_DrawCircle(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,Red,8,bitmappills);
+				case 1:LCD_DrawBlock(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);	break;
+				case 2:LCD_DrawBlock(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);
+					LCD_Drawbitmap(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,Red,8,bitmappills);
 								
 				break;
 				case 3:
-						LCD_DrawBlock2(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);
-						LCD_DrawCircle(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,Red,8,bitmap_superpill);	
+						LCD_DrawBlock(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);
+						LCD_Drawbitmap(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,Red,8,bitmap_superpill);	
 					
 				break;
 				default: break;
 			}
 			switch(mode)
 			{
-				case 0:LCD_DrawCircle(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,Red,8,bitmap_ghost); break;
-				case 1:LCD_DrawCircle(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,Blue2,8,bitmap_ghost); break;
+				case 0:LCD_Drawbitmap(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,Red,8,bitmap_ghost); break;
+				case 1:LCD_Drawbitmap(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,Blue2,8,bitmap_ghost); break;
 				case 3:UpdateAnim();break;
 			}
 			
-			//LCD_DrawBlock2(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);	
+			//LCD_DrawBlock(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);	
 
 		}
 		nextframe=!nextframe;
@@ -248,9 +248,9 @@ void RIT_IRQHandler (void)
 	}
 	//***********************************************
 	
-	//LCD_DrawCircle(pac.x/8*8,pac.y/8*8,Blue,8,bitmapcircle);
-	//LCD_DrawCircle(pac.x,pac.y,Yellow,8,bitmapcircle);
-	//LCD_DrawCircle(pac.x,pac.y,Blue,8,bitmapcircle);
+	//LCD_Drawbitmap(pac.x/8*8,pac.y/8*8,Blue,8,bitmapcircle);
+	//LCD_Drawbitmap(pac.x,pac.y,Yellow,8,bitmapcircle);
+	//LCD_Drawbitmap(pac.x,pac.y,Blue,8,bitmapcircle);
 	if((LPC_GPIO1->FIOPIN & (1<<29)) == 0){	
 		/* Joytick UP pressed */
 		//up++;

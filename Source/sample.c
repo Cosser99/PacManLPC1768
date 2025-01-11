@@ -69,7 +69,7 @@ void ConfigMap()
 			if(riga&1)
 			{
 				//disegna quadrato 16x16
-				LCD_DrawBlock2(j*SIZEBLOCK,i*SIZEBLOCK,SIZEBLOCK,TRACECOLOR); //j sarebbe x sul display , i y 
+				LCD_DrawBlock(j*SIZEBLOCK,i*SIZEBLOCK,SIZEBLOCK,TRACECOLOR); //j sarebbe x sul display , i y 
 				mapmat[j][i]=1;
 				cnt1++;
 			}
@@ -82,11 +82,11 @@ void ConfigMap()
 	{
 		for(j=17;j<20;j++)
 		{
-			LCD_DrawBlock2(i*SIZEBLOCK,j*SIZEBLOCK,SIZEBLOCK,TRACECOLOR);
+			LCD_DrawBlock(i*SIZEBLOCK,j*SIZEBLOCK,SIZEBLOCK,TRACECOLOR);
 		}
 	}
-	LCD_DrawBlock2(13*SIZEBLOCK,16*SIZEBLOCK,SIZEBLOCK,TRACECOLOR);
-	LCD_DrawBlock2(14*SIZEBLOCK,16*SIZEBLOCK,SIZEBLOCK,TRACECOLOR);
+	LCD_DrawBlock(13*SIZEBLOCK,16*SIZEBLOCK,SIZEBLOCK,TRACECOLOR);
+	LCD_DrawBlock(14*SIZEBLOCK,16*SIZEBLOCK,SIZEBLOCK,TRACECOLOR);
 	LCD_DrawLine(13*SIZEBLOCK,16*SIZEBLOCK+4,15*SIZEBLOCK,16*SIZEBLOCK+4,White);
 }
 void DrawPills()
@@ -102,7 +102,7 @@ void DrawPills()
 			if(mapmat[i][j]==1)
 			{
 				//LCD_SetPoint(i*SIZEBLOCK,j*SIZEBLOCK,Yellow); pixel di riferimento
-				LCD_DrawCircle(i*SIZEBLOCK,j*SIZEBLOCK,Red,8,bitmappills);
+				LCD_Drawbitmap(i*SIZEBLOCK,j*SIZEBLOCK,Red,8,bitmappills);
 				mapmat[i][j]=2;
 				Session.pills++;
 				num--;
@@ -142,7 +142,7 @@ void GenSuperPill()
 		if(mapmat[x][y]==2)
 		{
 			mapmat[x][y]=3;
-			LCD_DrawCircle(x*SIZEBLOCK,y*SIZEBLOCK,Red,8,bitmap_superpill);
+			LCD_Drawbitmap(x*SIZEBLOCK,y*SIZEBLOCK,Red,8,bitmap_superpill);
 			counter--;
 		}
 	}while(counter !=0);
@@ -160,7 +160,7 @@ int main(void)
 
 //				LCD_SetPoint(16,10,Green);		//X offseet +6	Y normale , GetPoint(10,10,Green)
 //				LCD_SetPoint(20,1,Black);
-//				if(LCD_GetPoint(20-6,1)==Black) LCD_DrawBlock2(0,100,20,Black);
+//				if(LCD_GetPoint(20-6,1)==Black) LCD_DrawBlock(0,100,20,Black);
 
 
 	LCD_Clear(Black);
@@ -173,7 +173,7 @@ int main(void)
 	ghost.x=18;
 	ghost.y=29;
 	ghost.mode=0;
-	LCD_DrawCircle(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,Yellow,8,bitmapcircle);
+	LCD_Drawbitmap(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,Yellow,8,bitmapcircle);
 		//init_timer(0, 0x1312D0 ); 						// 50ms * 25MHz = 1.25*10^6 = 0x1312D0 
 		//init_timer(0, 0x6108 ); 						  // 1ms * 25MHz = 25*10^3 = 0x6108 
 		//init_timer(0, 0x4E2 ); 						    // 500us * 25MHz = 1.25*10^3 = 0x4E2 
@@ -182,13 +182,10 @@ int main(void)
 	joystick_init();											//Joystick Initialization            
 	init_RIT(0x002C4B40);									// RIT Initialization 50 msec   
 	init_timer(1,0x002C4B40);							//Timer for score
-	init_timer(2,0x009FFFFF);
 	//init_RIT(0x003C4B40); //0x004C4B40
 	enable_RIT();													// RIT enabled												
 	enable_timer(0);
 	enable_timer(1);
-	enable_timer(2);
-	
 	//GenSuperPill();
 	SetPrio();  //altrimenti non funziona bene il rit
 	LPC_SC->PCON |= 0x1;									// power-down	mode										
@@ -196,11 +193,11 @@ int main(void)
 		
 	static uint8_t a[7]={"Lives:"};
 	GUI_Text(0,300,a,White,Black);
-	LCD_DrawCircle16(50,300,Yellow,16,bitmap_pac);
+	LCD_Drawbitmap16(50,300,Yellow,16,bitmap_pac);
 	
-//	LCD_DrawCircle16(10,10,Yellow,16,bitmap_pac);
-//	LCD_DrawCircle16(18,100,Yellow,16,bitmap_pac);
-//	LCD_DrawCircle16(26,100,Yellow,16,bitmap_pac);
+//	LCD_Drawbitmap16(10,10,Yellow,16,bitmap_pac);
+//	LCD_Drawbitmap16(18,100,Yellow,16,bitmap_pac);
+//	LCD_Drawbitmap16(26,100,Yellow,16,bitmap_pac);
   while (1)	
   {
 		__ASM("wfi");

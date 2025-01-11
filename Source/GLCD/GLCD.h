@@ -92,15 +92,14 @@ void LCD_Initialization(void);
 void LCD_Clear(uint16_t Color);
 uint16_t LCD_GetPoint(uint16_t Xpos,uint16_t Ypos);
 void LCD_SetPoint(uint16_t Xpos,uint16_t Ypos,uint16_t point);
-//void LCD_DrawBlock(blck b,uint16_t color);
-void LCD_DrawBlock2(uint16_t x,uint16_t y,uint16_t size,uint16_t color);
-void LCD_DrawCircle(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint8_t *bitmap);
+void LCD_DrawBlock(uint16_t x,uint16_t y,uint16_t size,uint16_t color);
+void LCD_Drawbitmap(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint8_t *bitmap);
 void LCD_DrawLine( uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1 , uint16_t color );
 void PutChar( uint16_t Xpos, uint16_t Ypos, uint8_t ASCI, uint16_t charColor, uint16_t bkColor );
 void GUI_Text(uint16_t Xpos, uint16_t Ypos, uint8_t *str,uint16_t Color, uint16_t bkColor);
 //
 void IntToChar(uint8_t *txt,uint8_t num,uint8_t start);
-void LCD_DrawCircle16(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint16_t *bitmap);
+void LCD_Drawbitmap16(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint16_t *bitmap);
 #endif 
 
 /*********************************************************************************************************
