@@ -34,22 +34,7 @@ extern uint8_t mode;
 
 volatile uint8_t gameover=0;
 volatile uint8_t counterf=10; //10 secondi
-void UpdateText2()	//per renderlo più veloce
-{
-	static uint8_t txt[10];
-	sprintf(txt,"Score: %d",Session.score);
-	GUI_Text(150,0,txt,White,Black);
-	if(Session.netscore>=1000)
-	{
-		Session.netscore=0;
-		Session.lives+=1;
-		int i=0;
-		for(i=0;i<Session.lives;i++)
-			LCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);
-		
-	}
-	
-}
+
 void UpdateLives()
 {
 	int i;
@@ -126,7 +111,7 @@ void TIMER0_IRQHandler (void)
 
 void TIMER1_IRQHandler (void)
 {
-	UpdateText2();
+
 
   LPC_TIM1->IR = 1;			/* clear interrupt flag */
   return;

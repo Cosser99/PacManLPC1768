@@ -158,8 +158,26 @@ void UpdateAnim()
 	}
 	nf=!nf;
 }
+void UpdateText2()	//per renderlo più veloce
+{
+	static uint8_t txt[15];
+	sprintf(txt,"%d",Session.score);
+	GUI_Text(150+16*3,0,txt,White,Black);
+	if(Session.netscore>=1000)
+	{
+		Session.netscore=0;
+		Session.lives+=1;
+		int i=0;
+		for(i=0;i<Session.lives;i++)
+			LCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);
+		
+	}
+	
+}
+
 void RIT_IRQHandler (void)
 {					
+	UpdateText2();
 	//
 	//UpdateText();
 	//Joystick : 26 sotto , 27 sinistra , 28 destra , 29 sopra

@@ -155,17 +155,11 @@ int main(void)
   SystemInit();  												/* System Initialization (i.e., PLL)  */
 	BUTTON_init();
   LCD_Initialization();
-		//TP_Init();
-		//TouchPanel_Calibrate();
-
-//				LCD_SetPoint(16,10,Green);		//X offseet +6	Y normale , GetPoint(10,10,Green)
-//				LCD_SetPoint(20,1,Black);
-//				if(LCD_GetPoint(20-6,1)==Black) LCD_DrawBlock(0,100,20,Black);
 
 
 	LCD_Clear(Black);
 	GUI_Text(0,0,(uint8_t*) "Game Over In:",White,Black);
-		//GUI_Text(150,0,(uint8_t*) "SCORE:",White,Black);
+  GUI_Text(150,0,(uint8_t*) "SCORE:",White,Black);
 	pac.x=Session.spx;
 	pac.y=Session.spy;
 	ConfigMap();
