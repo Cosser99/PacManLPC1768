@@ -25,7 +25,7 @@
 ** Returned value:		None
 **
 ******************************************************************************/
-#define VOLUME 10
+#define VOLUME 6
 extern GINFO Session;
 extern uint16_t bitmap_pac[16];
 extern uint8_t bitmap_superpill[8];
@@ -69,7 +69,7 @@ extern Player ghost;
 void Respawn()
 {
 	
-	UpdateLives();
+	//UpdateLives();	//Da attivare
 	Session.paused=0;
 	Session.death=0;
 	mode=3;	//Animazione respawn ghost
@@ -97,9 +97,9 @@ void TIMER0_IRQHandler (void)
 	{
 		Session.time--;
 		if(Session.time<=0) GameOver();
-		uint8_t txt[3];
-		sprintf(txt,"%d",Session.time);
-		GUI_Text(100,0,txt,White,Black);		
+//		uint8_t txt[3];
+//		sprintf(txt,"%d",Session.time);
+//		GUI_Text(100,0,txt,White,Black);		
 	}
 	if(Session.superpills>0)
 	{

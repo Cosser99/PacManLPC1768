@@ -13,6 +13,7 @@
 #include "../MapEditor/Map.h"
 #include "../GameManager/GM.h"
 #include "../music/music.h"
+#include "../CAN/CAN.h"
 #include <stdio.h>
 /******************************************************************************
 ** Function name:		RIT_IRQHandler
@@ -179,11 +180,25 @@ void UpdateAnim() //TAG: FRAME ANIMAZIONE
 	}
 	nf=!nf;
 }
-void UpdateText2()	//per renderlo più veloce
+void Transmit()			//RECEIVE ON IRQ_CAN
+{
+	CAN_TxMsg.data[0] = Session.time;
+	CAN_TxMsg.data[1] = Session.lives;
+	CAN_TxMsg.data[2] = Session.score>>8;
+	CAN_TxMsg.data[3] = Session.score&~0xFFFF0000;
+	CAN_TxMsg.len = 4;
+	CAN_TxMsg.id = 2; //trasmetti a 1 da 2
+	CAN_TxMsg.format = STANDARD_FORMAT;
+	CAN_TxMsg.type = DATA_FRAME;
+	CAN_wrMsg (1, &CAN_TxMsg);               /* transmit message */
+}
+void Receive(uint8_t lives,uint8_t time,uint16_t score)
 {
 	static uint8_t txt[15];
-	sprintf(txt,"%d",Session.score);
+	sprintf(txt,"%d",score);
 	GUI_Text(150+16*3,0,txt,White,Black);
+	if(!Session.gameover)
+	{
 	if(Session.netscore>=1000)
 	{
 		Session.netscore=0;
@@ -193,8 +208,46 @@ void UpdateText2()	//per renderlo più veloce
 			LCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);
 		
 	}
-	
+	//tempo
+		uint8_t txttime[3];
+		sprintf(txttime,"%d",time);
+		GUI_Text(100,0,txttime,White,Black);	
+	//vite
+		int i;
+		LCD_DrawBlock(50+(lives)*20,390,16,Black);
+		for(i=0;i<lives;i++)
+			LCD_Drawbitmap16(50+i*20,390,Yellow,16,bitmap_pac);
+	}
 }
+/*
+void UpdateText2()	//per renderlo più veloce
+{
+	static uint8_t txt[15];
+	sprintf(txt,"%d",Session.score);
+	GUI_Text(150+16*3,0,txt,White,Black);
+	if(!Session.gameover)
+	{
+	if(Session.netscore>=1000)
+	{
+		Session.netscore=0;
+		Session.lives+=1;
+		int i=0;
+		for(i=0;i<Session.lives;i++)
+			LCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);
+		
+	}
+	//tempo
+		uint8_t txttime[3];
+		sprintf(txttime,"%d",Session.time);
+		GUI_Text(100,0,txttime,White,Black);	
+	//vite
+		int i;
+		LCD_DrawBlock(50+(Session.lives)*20,300,16,Black);
+		for(i=0;i<Session.lives;i++)
+			LCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);
+	}
+}
+*/
 void PlayMusic()
 {
 	if(isplaying){
@@ -227,8 +280,9 @@ void PlayMusic()
 }
 
 void RIT_IRQHandler (void)
-{			
-	UpdateText2();
+{		
+	Transmit();
+	//UpdateText2();
 	if(!Session.gameover&&!Session.paused){
 	PlayMusic();
 	idm=2;

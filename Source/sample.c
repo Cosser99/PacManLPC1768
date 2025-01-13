@@ -30,6 +30,7 @@
 #include "RIT/RIT.h"
 #include "MapEditor/MAP.h"
 #include "GameManager/GM.h"
+#include "CAN/CAN.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -160,7 +161,7 @@ int main(void)
   SystemInit();  												/* System Initialization (i.e., PLL)  */
 	BUTTON_init();
   LCD_Initialization();
-
+	CAN_Init();
 	
 	LCD_Clear(Black);
 	GUI_Text(0,0,(uint8_t*) "Game Over In:",White,Black);
