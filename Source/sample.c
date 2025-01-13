@@ -169,8 +169,8 @@ int main(void)
 	pac.y=Session.spy;
 	ConfigMap();
 	DrawPills();
-	ghost.x=18;
-	ghost.y=29;
+	ghost.x=13;
+	ghost.y=15;
 	ghost.mode=0;
 	LCD_Drawbitmap(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,Yellow,8,bitmapcircle);
 	init_timer(0, 0x017D7840 ); 						    // 8us * 25MHz = 200 ~= 0xC8 

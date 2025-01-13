@@ -61,7 +61,8 @@ int GenRandom2(int max)
 void GameOver()
 {
 		Session.gameover=1;
-		GUI_Text(MAX_X/2-30,MAX_Y/2-30,(uint8_t*)"GAME OVER",White,Black);
+		LCD_Clear(Black);
+		GUI_Text(MAX_X/2-35,MAX_Y/2-20,(uint8_t*)"GAME OVER",White,Black);
 }
 extern Player pac;
 extern Player ghost;

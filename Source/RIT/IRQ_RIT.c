@@ -76,7 +76,8 @@ void collision()
 			case 0:			//IL FANTASMA TI HA PRESO
 			if(!Session.death)
 			Death();
-			
+			extern uint8_t counterf;
+			counterf=0;
 			break;	
 			case 1:				//MUORE IL FANTASMA
 			Session.score+=100;
@@ -85,6 +86,8 @@ void collision()
 			ghost.x=13;
 			ghost.y=15;
 			mode=3;		//MODALITA ANIMAZIONE
+			extern uint8_t counterf;
+			counterf=0;
 			break;
 		}
 		
@@ -264,40 +267,43 @@ void RIT_IRQHandler (void)
 			DrawPac( pac.x, pac.y,bitmapcircle);
 			LCD_DrawBlock(lx*8,ly*8,8,Blue);
 		}
-		//************GHOST MOVEMENT******************
+		//************GHOST MOVEMENT MOVIMENTO******************
 		static nextframe=0;
 		if(nextframe==0)	//muovere il fantasimo la meta del tempo
 		{
-			ghost.lx=ghost.x;
-			ghost.ly=ghost.y;
-		uint8_t movement=Next(&pac,&ghost);
-			switch(movement)
+			if(frame==0) //TODO : Da vedere
 			{
-				case 0:ghost.y++;  break;
-				case 1:ghost.x++;break;
-				case 2:ghost.y--;break;
-				case 3:ghost.x--;break;
-				default: break;
-			}
-			//Draw
-			switch(mapmat[ghost.lx][ghost.ly])
-			{
-				case 1:LCD_DrawBlock(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);	break;
-				case 2:LCD_DrawBlock(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);
-					LCD_Drawbitmap(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,Red,8,bitmappills);
-								
-				break;
-				case 3:
-						LCD_DrawBlock(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);
-						LCD_Drawbitmap(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,Red,8,bitmap_superpill);	
-					
-				break;
-				default: break;
+				ghost.lx=ghost.x;
+				ghost.ly=ghost.y;
+				uint8_t movement=Next(&pac,&ghost);
+				switch(movement)
+				{
+					case 0:ghost.y++;  break;
+					case 1:ghost.x++;break;
+					case 2:ghost.y--;break;
+					case 3:ghost.x--;break;
+					default: break;
+				}
+				//Draw
+				switch(mapmat[ghost.lx][ghost.ly])
+				{
+					case 1:LCD_DrawBlock(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);	break;
+					case 2:LCD_DrawBlock(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);
+						LCD_Drawbitmap(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,Red,8,bitmappills);
+									
+					break;
+					case 3:
+							LCD_DrawBlock(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,8,Blue);
+							LCD_Drawbitmap(ghost.lx*SIZEBLOCK,ghost.ly*SIZEBLOCK,Red,8,bitmap_superpill);	
+						
+					break;
+					default: break;
+				}
 			}
 			switch(mode)
 			{
-				case 0:LCD_Drawbitmap(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,Red,8,bitmap_ghost); break;
-				case 1:LCD_Drawbitmap(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,Blue2,8,bitmap_ghost); break;
+				case 0:LCD_Drawbitmap(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,Red,8,bitmap_ghost); break; //inseguimento
+				case 1:LCD_Drawbitmap(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,Blue2,8,bitmap_ghost); break; //spaventato
 				case 3:UpdateAnim();break;
 			}
 			
