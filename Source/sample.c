@@ -120,8 +120,10 @@ void DebugOffset(uint16_t size,uint16_t color)	//DebugOffset(SIZEBLOCK,Black);
 }
 void SetPrio()
 {
-	NVIC_SetPriority(RIT_IRQn,0);
-	NVIC_SetPriority(TIMER0_IRQn,3);
+	NVIC_SetPriority(RIT_IRQn,1);
+	NVIC_SetPriority(TIMER0_IRQn,0);
+	NVIC_SetPriority(TIMER1_IRQn,0);
+	NVIC_SetPriority(TIMER3_IRQn,0);
 	
 }
 int GenRandom(int max)
@@ -130,7 +132,7 @@ int GenRandom(int max)
 	return rand()%max;
 }
 
-void GenSuperPill()
+void GenSuperPill()		//DA TOGLIERE
 {
 	//x 0-30 y .. 0-40
 	int counter=NSUPERPILL;
@@ -168,30 +170,28 @@ int main(void)
 	ghost.y=29;
 	ghost.mode=0;
 	LCD_Drawbitmap(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,Yellow,8,bitmapcircle);
-		//init_timer(0, 0x1312D0 ); 						// 50ms * 25MHz = 1.25*10^6 = 0x1312D0 
-		//init_timer(0, 0x6108 ); 						  // 1ms * 25MHz = 25*10^3 = 0x6108 
-		//init_timer(0, 0x4E2 ); 						    // 500us * 25MHz = 1.25*10^3 = 0x4E2 
-	//17D 7840
 	init_timer(0, 0x017D7840 ); 						    // 8us * 25MHz = 200 ~= 0xC8 
 	joystick_init();											//Joystick Initialization            
-	init_RIT(0x002C4B40);									// RIT Initialization 50 msec   
-	init_timer(1,0x002C4B40);							//Timer for score
+	
+	
+	init_RIT(0x002C4B40);									// RIT Initialization 50 msec 
 	//init_RIT(0x003C4B40); //0x004C4B40
 	enable_RIT();													// RIT enabled												
 	enable_timer(0);
-	enable_timer(1);
 	//GenSuperPill();
 	SetPrio();  //altrimenti non funziona bene il rit
-	LPC_SC->PCON |= 0x1;									// power-down	mode										
-	LPC_SC->PCON &= ~(0x2);						
-		
+	
 	static uint8_t a[7]={"Lives:"};
 	GUI_Text(0,300,a,White,Black);
 	LCD_Drawbitmap16(50,300,Yellow,16,bitmap_pac);
 	
-//	LCD_Drawbitmap16(10,10,Yellow,16,bitmap_pac);
-//	LCD_Drawbitmap16(18,100,Yellow,16,bitmap_pac);
-//	LCD_Drawbitmap16(26,100,Yellow,16,bitmap_pac);
+	LPC_SC->PCON |= 0x1;									/* power-down	mode										*/
+	LPC_SC->PCON &= ~(0x2);						
+		//importante (per la musica) non togliere
+	LPC_PINCON->PINSEL1 |= (1<<21);
+	LPC_PINCON->PINSEL1 &= ~(1<<20);
+	LPC_GPIO0->FIODIR |= (1<<26);
+	//
   while (1)	
   {
 		__ASM("wfi");

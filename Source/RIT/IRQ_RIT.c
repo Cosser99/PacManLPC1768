@@ -12,6 +12,7 @@
 #include "../GLCD/GLCD.h"  //mod
 #include "../MapEditor/Map.h"
 #include "../GameManager/GM.h"
+#include "../music/music.h"
 #include <stdio.h>
 /******************************************************************************
 ** Function name:		RIT_IRQHandler
@@ -22,7 +23,7 @@
 ** Returned value:		None
 **
 ******************************************************************************/
-
+#define UPTICKS 1
 volatile int down=0;
 volatile int direction=0; //0123 sotto destra sopra sinistra
 volatile int cango[4]={1};
@@ -46,11 +47,21 @@ extern int into_down;
 //
 static uint8_t frame=0;
 
+//musica
+static int isplaying=1;
+extern NOTE song[];
+extern NOTE ingame[];
+extern NOTE death[];
+NOTE *actual=ingame;
+
+
 void Death()
 {
 	Session.lives--;
 	Session.death=1;
 	Session.paused=1;
+	isplaying=1;
+	actual=&death;
 	
 }
 int checkposition()
@@ -174,10 +185,34 @@ void UpdateText2()	//per renderlo più veloce
 	}
 	
 }
-
+void PlayMusic()
+{
+	if(isplaying){
+		static int currentNote;
+		static int ticks = 0;
+		if(!isNotePlaying())
+		{
+			++ticks;
+			if(ticks == UPTICKS)
+			{
+				ticks = 0;
+				playNote(actual[currentNote++]);
+			}
+		}
+		////********ATTENZIONE!!!!
+		//Devo sistemare qui
+		if(currentNote == (sizeof(actual) / sizeof(actual[0])))	
+		{
+			LCD_DrawBlock(0,0,5,White);
+		}
+	}
+}
 void RIT_IRQHandler (void)
 {					
 	UpdateText2();
+	PlayMusic();
+//	NOTE asd={C1,time_biscroma};
+//	playNote(asd);
 	//
 	//UpdateText();
 	//Joystick : 26 sotto , 27 sinistra , 28 destra , 29 sopra
@@ -265,35 +300,8 @@ void RIT_IRQHandler (void)
 		GUI_Text(MAX_X/2-20,MAX_Y/2-10,txt,White,Black);
 	}
 	//***********************************************
+
 	
-	//LCD_Drawbitmap(pac.x/8*8,pac.y/8*8,Blue,8,bitmapcircle);
-	//LCD_Drawbitmap(pac.x,pac.y,Yellow,8,bitmapcircle);
-	//LCD_Drawbitmap(pac.x,pac.y,Blue,8,bitmapcircle);
-	if((LPC_GPIO1->FIOPIN & (1<<29)) == 0){	
-		/* Joytick UP pressed */
-		//up++;
-		//LCD_SetPoint(120,position,Black);
-		//position++;
-		switch(up){
-			case 1:
-				
-				//LED_Off(position);
-				//LED_On(0);
-				//LCD_SetPoint(120,position,Black);
-				//position++;
-				break;
-			case 60:	//3sec = 3000ms/50ms = 60
-				//LED_Off(position);
-				//LED_On(7);
-				//position = 7;
-				break;
-			default:
-				break;
-		}
-	}
-	else{
-			up=0;
-	}
 	
 	/* button management */
 	if(into_down!=0){ 
