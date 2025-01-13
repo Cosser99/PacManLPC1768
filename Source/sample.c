@@ -41,6 +41,7 @@ extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emul
 #endif
 //
 #define NUMPILLS 240
+
 extern Player pac;
 extern Player ghost;
 extern uint16_t bitmap_pac[16];
@@ -149,8 +150,10 @@ void GenSuperPill()		//DA TOGLIERE
 		}
 	}while(counter !=0);
 }
+
 int main(void) 
 {
+	
 	//
 		GM_Default(&Session);
 	//
@@ -158,7 +161,7 @@ int main(void)
 	BUTTON_init();
   LCD_Initialization();
 
-
+	
 	LCD_Clear(Black);
 	GUI_Text(0,0,(uint8_t*) "Game Over In:",White,Black);
   GUI_Text(150,0,(uint8_t*) "SCORE:",White,Black);
@@ -174,7 +177,7 @@ int main(void)
 	joystick_init();											//Joystick Initialization            
 	
 	
-	init_RIT(0x002C4B40);									// RIT Initialization 50 msec 
+	init_RIT(0x007C4B40);									// Emulatore 0x002C4B40
 	//init_RIT(0x003C4B40); //0x004C4B40
 	enable_RIT();													// RIT enabled												
 	enable_timer(0);
@@ -187,7 +190,7 @@ int main(void)
 	
 	LPC_SC->PCON |= 0x1;									/* power-down	mode										*/
 	LPC_SC->PCON &= ~(0x2);						
-		//importante (per la musica) non togliere
+	//importante (per la musica) non togliere
 	LPC_PINCON->PINSEL1 |= (1<<21);
 	LPC_PINCON->PINSEL1 &= ~(1<<20);
 	LPC_GPIO0->FIODIR |= (1<<26);

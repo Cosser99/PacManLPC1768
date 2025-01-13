@@ -39,7 +39,8 @@ NOTE song[] =
 	 {AS3,time_biscroma},//si diesis
 	 {A3,time_biscroma},
 	 {C4,time_semicroma},
-	 {C4,time_semicroma}
+	 {C4,time_semicroma},
+	 {end,time_semicroma}
 
 };
 NOTE ingame[]=
@@ -49,7 +50,7 @@ NOTE ingame[]=
 	{D2,time_biscroma},
 	{C2,time_biscroma},
 	{D2,time_biscroma},
-		{pause,time_biscroma}
+		{end,time_semicroma}
 };
 NOTE death[]=
 {
@@ -65,12 +66,13 @@ NOTE death[]=
 	{pause,time_biscroma},
 	{CS1,time_biscroma},
 	{C1,time_semicroma},
-	{pause,time_biscroma}
+	{end,time_semicroma}
 };
 
 
 void playNote(NOTE note)
 {
+	
 	if(note.freq != pause)
 	{
 		reset_timer(3);
@@ -83,6 +85,7 @@ void playNote(NOTE note)
 	reset_timer(1);
 	init_timer(1, note.duration);
 	enable_timer(1);
+	
 }
 
 BOOL isNotePlaying(void)

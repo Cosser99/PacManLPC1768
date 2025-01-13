@@ -119,7 +119,7 @@ typedef enum frequencies
 	CS8 = N_ENTRY(4435),
 	D8	 = N_ENTRY(4699),
 	DS8 = N_ENTRY(4978),
-
+	end = -1,
 	pause = 0	// DO NOT SOUND
 } FREQUENCY;
 /*

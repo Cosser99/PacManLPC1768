@@ -97,6 +97,10 @@ void reset_timer( uint8_t timer_num )
 
 uint32_t init_timer ( uint8_t timer_num, uint32_t TimerInterval )
 {
+	//abilitare timer su scheda
+	LPC_SC -> PCONP |= (1 << 22);  // TURN ON TIMER 2 
+	LPC_SC -> PCONP |= (1 << 23);  // TURN ON TIMER 3
+	
   if ( timer_num == 0 )
   {
 	LPC_TIM0->MR0 = TimerInterval;

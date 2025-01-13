@@ -52,8 +52,8 @@ static int isplaying=1;
 extern NOTE song[];
 extern NOTE ingame[];
 extern NOTE death[];
-NOTE *actual=ingame;
-
+NOTE *actual=song;
+static uint8_t idm; //music id
 
 void Death()
 {
@@ -63,6 +63,32 @@ void Death()
 	isplaying=1;
 	actual=&death;
 	
+}
+void collision()
+{
+	uint8_t x=pac.x;
+	uint8_t y=pac.y;
+		//Se prende il fantasmino
+	if(x==ghost.x&&y==ghost.y)
+	{
+		switch(mode)
+		{
+			case 0:			//IL FANTASMA TI HA PRESO
+			if(!Session.death)
+			Death();
+			
+			break;	
+			case 1:				//MUORE IL FANTASMA
+			Session.score+=100;
+			Session.netscore+=100;
+			mode=0;	
+			ghost.x=13;
+			ghost.y=15;
+			mode=3;		//MODALITA ANIMAZIONE
+			break;
+		}
+		
+	}
 }
 int checkposition()
 {
@@ -86,27 +112,7 @@ int checkposition()
 		if(mode!=3)
 		mode=1;//cambia mod
 	}
-	//Se prende il fantasmino
-	if(x==ghost.x&&y==ghost.y)
-	{
-		switch(mode)
-		{
-			case 0:			//IL FANTASMA TI HA PRESO
-			if(!Session.death)
-			Death();
-			
-			break;	
-			case 1:				//MUORE IL FANTASMA
-			Session.score+=100;
-			Session.netscore+=100;
-			mode=0;	
-			ghost.x=30;
-			ghost.y=40;
-			mode=3;		//MODALITA ANIMAZIONE
-			break;
-		}
-		
-	}
+	collision();
 	//****************TELETRASPORTO**********
 	if(pac.x==0&&dir==4) {LCD_DrawBlock(pac.x*8,pac.y*8,8,Blue);pac.x=30;}
 	else if(pac.x==29&&dir==2) {LCD_DrawBlock(pac.x*8,pac.y*8,8,Blue);pac.x=0;}
@@ -151,14 +157,15 @@ int checkbutton()
 	return 1;
 }
 
-void UpdateAnim()
+void UpdateAnim() //TAG: FRAME ANIMAZIONE
 {
 	static uint8_t nf=0;
 	
 	if(frame==0)LCD_DrawLine(13*SIZEBLOCK,16*SIZEBLOCK+4,15*SIZEBLOCK,16*SIZEBLOCK+4,Blue);
 	if(frame>=4) {
-		ghost.x=13;ghost.y=15;mode=0;frame=0;
+		ghost.x=13;ghost.y=15;mode=0;frame=0; //x 13 y 15
 		LCD_DrawLine(13*SIZEBLOCK,16*SIZEBLOCK+4,15*SIZEBLOCK,16*SIZEBLOCK+4,White);
+		nf=0;
 	return;}
 	if(nf)
 	{
@@ -199,22 +206,30 @@ void PlayMusic()
 				playNote(actual[currentNote++]);
 			}
 		}
-		////********ATTENZIONE!!!!
-		//Devo sistemare qui
-		if(currentNote == (sizeof(actual) / sizeof(actual[0])))	
+
+		if(actual[currentNote].freq==end)
 		{
-			LCD_DrawBlock(0,0,5,White);
+			
+			if(idm==2)
+			{
+				actual=&ingame;
+				currentNote=0;
+				isplaying=1;
+				return ;
+			}
+			isplaying=0;
 		}
+
 	}
 }
+
 void RIT_IRQHandler (void)
-{					
+{			
 	UpdateText2();
+	if(!Session.gameover&&!Session.paused){
 	PlayMusic();
-//	NOTE asd={C1,time_biscroma};
-//	playNote(asd);
-	//
-	//UpdateText();
+	idm=2;
+	}
 	//Joystick : 26 sotto , 27 sinistra , 28 destra , 29 sopra
 	int moving=0;	//evita il lampeggio di pacman
 	static int up=0;

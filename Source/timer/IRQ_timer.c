@@ -25,10 +25,11 @@
 ** Returned value:		None
 **
 ******************************************************************************/
-
+#define VOLUME 10
 extern GINFO Session;
 extern uint16_t bitmap_pac[16];
 extern uint8_t bitmap_superpill[8];
+extern uint8_t bitmapcircle[8];
 extern int mapmat[MAXCASELLA][NUMY];
 extern uint8_t mode;
 
@@ -75,7 +76,7 @@ void Respawn()
 	pac.x=Session.spx;
 	pac.y=Session.spy;
 
-	LCD_Drawbitmap(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,Yellow,8,bitmap_pac);
+	LCD_Drawbitmap(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,Yellow,8,bitmapcircle);
 	
 	
 }
@@ -101,9 +102,11 @@ void TIMER0_IRQHandler (void)
 	}
 	if(Session.superpills>0)
 	{
+		
 		init_timer(2,GenRandom2(0x00FFFFFF));
 		LPC_TIM2->TC=0;
 		enable_timer(2);
+		
 	}
 	if(mode) //10 secondi
 	{
@@ -144,6 +147,7 @@ void TIMER2_IRQHandler (void)
 	LPC_TIM2->IR = 1;	
 	return;
 }
+//TAG: TIMER MUSICA ONDA TIMER3 LPC_DAC
 void TIMER3_IRQHandler (void)
 {
 		static int sineticks=0;
@@ -151,7 +155,7 @@ void TIMER3_IRQHandler (void)
 	static int currentValue; 
 	currentValue = SinTable[sineticks];
 	currentValue -= 410;
-	currentValue /= 1;
+	currentValue /= VOLUME;		//volume
 	currentValue += 410;
 	LPC_DAC->DACR = currentValue <<6;
 	sineticks++;
