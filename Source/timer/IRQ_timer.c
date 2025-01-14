@@ -25,7 +25,7 @@
 ** Returned value:		None
 **
 ******************************************************************************/
-#define VOLUME 6
+#define VOLUME 3
 extern GINFO Session;
 extern uint16_t bitmap_pac[16];
 extern uint8_t bitmap_superpill[8];
@@ -63,6 +63,7 @@ void GameOver()
 		Session.gameover=1;
 		LCD_Clear(Black);
 		GUI_Text(MAX_X/2-35,MAX_Y/2-20,(uint8_t*)"GAME OVER",White,Black);
+		GUI_Text(150,0,(uint8_t*) "SCORE:",White,Black);
 }
 extern Player pac;
 extern Player ghost;

@@ -25,6 +25,8 @@
 **
 ******************************************************************************/
 #define UPTICKS 1
+#define GHOSTCOLOR Grey
+
 volatile int down=0;
 volatile int direction=0; //0123 sotto destra sopra sinistra
 volatile int cango[4]={1};
@@ -83,13 +85,13 @@ void collision(uint8_t movement)
 		//Se prende il fantasmino
 	if(x==ghost.x&&y==ghost.y||coll)
 	{
+		extern uint8_t counterf;
 		switch(mode)
 		{
 			case 0:			//IL FANTASMA TI HA PRESO
 			if(!Session.death)
 			Death();
-			extern uint8_t counterf;
-			counterf=0;
+			counterf=10;
 			break;	
 			case 1:				//MUORE IL FANTASMA
 			Session.score+=100;
@@ -98,8 +100,7 @@ void collision(uint8_t movement)
 			ghost.x=13;
 			ghost.y=15;
 			mode=3;		//MODALITA ANIMAZIONE
-			extern uint8_t counterf;
-			counterf=0;
+			counterf=10;
 			break;
 		}
 		
@@ -125,7 +126,9 @@ int checkposition()
 		Session.pills=Session.pills-1;
 		mapmat[x][y]=1;
 		if(mode!=3)
-		mode=1;//cambia mod
+			mode=1;//cambia mod
+		extern uint8_t counterf;
+		counterf=10;
 	}
 
 	//****************TELETRASPORTO**********
@@ -205,7 +208,7 @@ void Transmit()			//RECEIVE ON IRQ_CAN
 }
 void Receive(uint8_t lives,uint8_t time,uint16_t score)
 {
-	static uint8_t txt[15];
+	 uint8_t txt[15];
 	sprintf(txt,"%d",score);
 	GUI_Text(150+16*3,0,txt,White,Black);
 	if(!Session.gameover)
@@ -230,35 +233,7 @@ void Receive(uint8_t lives,uint8_t time,uint16_t score)
 			LCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);
 	}
 }
-/*
-void UpdateText2()	//per renderlo più veloce
-{
-	static uint8_t txt[15];
-	sprintf(txt,"%d",Session.score);
-	GUI_Text(150+16*3,0,txt,White,Black);
-	if(!Session.gameover)
-	{
-	if(Session.netscore>=1000)
-	{
-		Session.netscore=0;
-		Session.lives+=1;
-		int i=0;
-		for(i=0;i<Session.lives;i++)
-			LCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);
-		
-	}
-	//tempo
-		uint8_t txttime[3];
-		sprintf(txttime,"%d",Session.time);
-		GUI_Text(100,0,txttime,White,Black);	
-	//vite
-		int i;
-		LCD_DrawBlock(50+(Session.lives)*20,300,16,Black);
-		for(i=0;i<Session.lives;i++)
-			LCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);
-	}
-}
-*/
+
 void PlayMusic()
 {
 	if(isplaying){
@@ -370,7 +345,7 @@ void RIT_IRQHandler (void)
 			switch(mode)
 			{
 				case 0:LCD_Drawbitmap(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,Red,8,bitmap_ghost); break; //inseguimento
-				case 1:LCD_Drawbitmap(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,Blue2,8,bitmap_ghost); break; //spaventato
+				case 1:LCD_Drawbitmap(ghost.x*SIZEBLOCK,ghost.y*SIZEBLOCK,GHOSTCOLOR,8,bitmap_ghost); break; //spaventato
 				case 3:UpdateAnim();break;
 			}
 			

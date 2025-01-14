@@ -63,7 +63,7 @@
 #define Black          0x0000
 #define Grey           0xF7DE
 #define Blue           0x001F
-#define Blue2          0x051F
+#define Blue2          0x051F  
 #define Red            0xF800
 #define Magenta        0xF81F
 #define Green          0x07E0
@@ -87,7 +87,7 @@
 
 
 /* Private function prototypes -----------------------------------------------*/
-void DrawPac(int x,int y,uint8_t *bitmapcircle);
+void DrawPac(uint8_t x,uint8_t y,uint8_t *bitmapcircle);
 void LCD_Initialization(void);
 void LCD_Clear(uint16_t Color);
 uint16_t LCD_GetPoint(uint16_t Xpos,uint16_t Ypos);

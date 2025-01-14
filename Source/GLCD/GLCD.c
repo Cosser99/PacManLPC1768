@@ -543,57 +543,32 @@ void LCD_Drawbitmap16(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint16_t
 	}
 	
 }
+volatile uint8_t drawing=0; //TODO : Da togliere
 void LCD_Drawbitmap(uint16_t x,uint16_t y,uint16_t color,uint8_t size,uint8_t *bitmap)
 {
+
 	int dx=x;
 	int dy=y;
 	int i,j;
-	int lbit=(1<<size);
 	for(i=0;i<size;i++)
 	{
 		int riga=bitmap[i];
 		for(j=0;j<size;j++)
 		{
-			if(riga&lbit)
+			if(riga&1)
 			{
 				LCD_SetPoint(j+dx,i+dy,color);
 			}
-			riga=riga<<1;
+			riga=riga>>1;
 		}
 	}
+
 	
 }
-void IntToChar(uint8_t *txt,uint8_t num,uint8_t start)
+
+void DrawPac(uint8_t x,uint8_t y,uint8_t *bitmapcircle)
 {
-	int cnt=0;
-	int ext=0;
-	int x=num;
-	do
-	{
-		x=x/10;
-		if(x<=0) ext=1;
-		cnt++;
-	}while(ext==0);
-	//
-	x=num;
-	int i;
-	for(i=start+cnt;i>start;i--)
-	{
-		int a=x%10;
-		txt[i]=a+'0';
-		x=x/10;
-	}
-	//cancella il testo dopo
-	for(i=10;i>start+cnt;i--)
-	{
-		txt[i]=' ';
-	}
-}
-void DrawPac(int x,int y,uint8_t *bitmapcircle)
-{
-	x=x*8;
-	y=y*8;
-	LCD_Drawbitmap(x,y,Yellow,8,bitmapcircle);
+	LCD_Drawbitmap(x*8,y*8,Yellow,8,bitmapcircle);
 }
 void LCD_DrawLine( uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1 , uint16_t color )
 {

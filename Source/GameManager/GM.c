@@ -2,7 +2,7 @@
 
 void GM_Default(GINFO *info)
 {
-	info->lives=10;
+	info->lives=1;
 	info->score=0;
 	info->netscore=0;
 	info->gameover=0;

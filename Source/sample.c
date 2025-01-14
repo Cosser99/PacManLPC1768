@@ -126,7 +126,7 @@ void SetPrio()
 	NVIC_SetPriority(TIMER0_IRQn,0);
 	NVIC_SetPriority(TIMER1_IRQn,0);
 	NVIC_SetPriority(TIMER3_IRQn,0);
-	
+	NVIC_SetPriority(CAN_IRQn,4);
 }
 int GenRandom(int max)
 {

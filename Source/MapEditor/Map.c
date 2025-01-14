@@ -22,7 +22,7 @@ uint8_t bitmappills[8]=
 {
 	0,
 	0,
-	0,//126
+	24,//126
 	24,
 	0,
 	0,
@@ -44,12 +44,12 @@ uint8_t bitmap_ghost[8]=
 uint8_t bitmapcircle[8]=
 {
 	0,
-	0,
-	24,//126
-	60,
+	24,
+	60,//24
+	126,//60
+	126,
 	60,
 	24,
-	0,
 	0
 	
 };
@@ -195,12 +195,12 @@ uint8_t dist[MAXCASELLA][NUMY]={2000}; //matrice distanze
 //
 
 
-static uint8_t lastpx=0;
-static uint8_t lastpy=0;
 
 extern uint8_t mode;
 uint8_t Next(Player *pacman,Player *blinky) //return dir 0sotto 1 destra 2 sopra 3 sinistra
 {
+	 uint8_t lastpx=blinky->lx;
+	 uint8_t lastpy=blinky->ly;
 	uint8_t tx=pacman->x;	//target position (i ghost nel gioco originale giravano in loop per delle zone)
 	uint8_t ty=pacman->y;
 	uint8_t distv[4]={100,100,100,100}; //Distance vector
@@ -228,15 +228,12 @@ uint8_t Next(Player *pacman,Player *blinky) //return dir 0sotto 1 destra 2 sopra
 			index=i;
 		}
 	}
-	lastpx=blinky->x;
-	lastpy=blinky->y;
-	
 			break;
 		case 1: 
-	if(mapmat[x][y+1]!=0){distv[0]=Distance(x,y+1,tx,ty);cango[0]=1;}//sotto
-	if(mapmat[x+1][y]!=0){distv[1]=Distance(x+1,y,tx,ty);cango[1]=1;}//destra
-	if(mapmat[x][y-1]!=0){distv[2]=Distance(x,y-1,tx,ty);cango[2]=1;}//sopra
-	if(mapmat[x-1][y]!=0){distv[3]=Distance(x-1,y,tx,ty);cango[3]=1;}//sinistra
+	if(mapmat[x][y+1]!=0&&!(lastpx==x&&lastpy==(y+1))){distv[0]=Distance(x,y+1,tx,ty);cango[0]=1;}//sotto
+	if(mapmat[x+1][y]!=0&&!(lastpx==(x+1)&&lastpy==y)){distv[1]=Distance(x+1,y,tx,ty);cango[1]=1;}//destra
+	if(mapmat[x][y-1]!=0&&!(lastpx==x&&lastpy==(y-1))){distv[2]=Distance(x,y-1,tx,ty);cango[2]=1;}//sopra
+	if(mapmat[x-1][y]!=0&&!(lastpx==(x-1)&&lastpy==y)){distv[3]=Distance(x-1,y,tx,ty);cango[3]=1;}//sinistra
 	if(x-1==0)distv[3]=0;
 	if(x+1==29)distv[1]=0;
 	for(i=0;i<4;i++) {
@@ -246,9 +243,7 @@ uint8_t Next(Player *pacman,Player *blinky) //return dir 0sotto 1 destra 2 sopra
 			index=i;
 		}
 	}
-	lastpx=blinky->x;
-	lastpy=blinky->y;
-	
+
 			
 		break;
 }
