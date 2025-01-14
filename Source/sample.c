@@ -169,6 +169,7 @@ int main(void)
 	pac.x=Session.spx;
 	pac.y=Session.spy;
 	ConfigMap();
+
 	DrawPills();
 	ghost.x=13;
 	ghost.y=15;

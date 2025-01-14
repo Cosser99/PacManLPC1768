@@ -29,7 +29,6 @@ void SetY(Player x,uint8_t value);
 
 void Path(Player *pacman,Player *blinky);
 uint8_t Next(Player *pacman,Player *blinky); //return dir 0sotto 1 destra 2 sopra 3 sinistra
-
 //
 
 

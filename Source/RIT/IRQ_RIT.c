@@ -65,12 +65,23 @@ void Death()
 	actual=&death;
 	
 }
-void collision()
+void collision(uint8_t movement)
 {
 	uint8_t x=pac.x;
 	uint8_t y=pac.y;
+	uint8_t gx=ghost.x;
+	uint8_t gy=ghost.y;
+	//check collision next cell  (altrimenti capita che se hanno movimenti opposti e caselle adiacenti si superano a vicenda senza collidere)
+	uint8_t coll=0;
+	switch(movement)
+	{
+		case 0:coll=(gy+1==y&&x==gx)?1:0;break; //sotto
+		case 1:coll=(gx+1==x&&y==gy)?1:0;break; //destra
+		case 2:coll=(gy-1==y&&x==gx)?1:0;break; //sopra
+		case 3:coll=(gx-1==x&&y==gy)?1:0;break; //sinistra
+	}
 		//Se prende il fantasmino
-	if(x==ghost.x&&y==ghost.y)
+	if(x==ghost.x&&y==ghost.y||coll)
 	{
 		switch(mode)
 		{
@@ -116,7 +127,7 @@ int checkposition()
 		if(mode!=3)
 		mode=1;//cambia mod
 	}
-	collision();
+
 	//****************TELETRASPORTO**********
 	if(pac.x==0&&dir==4) {LCD_DrawBlock(pac.x*8,pac.y*8,8,Blue);pac.x=30;}
 	else if(pac.x==29&&dir==2) {LCD_DrawBlock(pac.x*8,pac.y*8,8,Blue);pac.x=0;}
@@ -214,9 +225,9 @@ void Receive(uint8_t lives,uint8_t time,uint16_t score)
 		GUI_Text(100,0,txttime,White,Black);	
 	//vite
 		int i;
-		LCD_DrawBlock(50+(lives)*20,390,16,Black);
+		LCD_DrawBlock(50+(lives)*20,300,16,Black);
 		for(i=0;i<lives;i++)
-			LCD_Drawbitmap16(50+i*20,390,Yellow,16,bitmap_pac);
+			LCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);
 	}
 }
 /*
@@ -323,19 +334,21 @@ void RIT_IRQHandler (void)
 		}
 		//************GHOST MOVEMENT MOVIMENTO******************
 		static nextframe=0;
+		uint8_t movement;
+		movement=Next(&pac,&ghost);
+		collision(movement);
 		if(nextframe==0)	//muovere il fantasimo la meta del tempo
 		{
 			if(frame==0) //TODO : Da vedere
 			{
 				ghost.lx=ghost.x;
 				ghost.ly=ghost.y;
-				uint8_t movement=Next(&pac,&ghost);
 				switch(movement)
 				{
-					case 0:ghost.y++;  break;
-					case 1:ghost.x++;break;
-					case 2:ghost.y--;break;
-					case 3:ghost.x--;break;
+					case 0:ghost.y++;  break; //sotto
+					case 1:ghost.x++;break; //destra
+					case 2:ghost.y--;break; //sopra
+					case 3:ghost.x--;break; //sinistra
 					default: break;
 				}
 				//Draw

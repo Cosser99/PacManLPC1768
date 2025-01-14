@@ -208,10 +208,7 @@ uint8_t Next(Player *pacman,Player *blinky) //return dir 0sotto 1 destra 2 sopra
 	int x,y;
 	x=blinky->x;
 	y=blinky->y;
-		//****************TELETRASPORTO**********
-	if(x==0) {blinky->x=30;return 10;} //10 = nessun movimento
-	else if(y==29) {blinky->x=0;return 10;}
-	//**************************************
+
 	uint8_t mindir=100;
 	uint8_t maxdir=0;
 	int index=-1;
@@ -221,6 +218,8 @@ uint8_t Next(Player *pacman,Player *blinky) //return dir 0sotto 1 destra 2 sopra
 	if(mapmat[x+1][y]!=0&&!(lastpx==(x+1)&&lastpy==y)){distv[1]=Distance(x+1,y,tx,ty);}//destra
 	if(mapmat[x][y-1]!=0&&!(lastpx==x&&lastpy==(y-1))){distv[2]=Distance(x,y-1,tx,ty);}//sopra
 	if(mapmat[x-1][y]!=0&&!(lastpx==(x-1)&&lastpy==y)){distv[3]=Distance(x-1,y,tx,ty);}//sinistra
+	if(x-1==0)distv[3]=0xFF;
+	if(x+1==29)distv[1]=0xFF;
 	int i;
 	for(i=0;i<4;i++) {
 	if(distv[i]<mindir)
@@ -238,6 +237,8 @@ uint8_t Next(Player *pacman,Player *blinky) //return dir 0sotto 1 destra 2 sopra
 	if(mapmat[x+1][y]!=0){distv[1]=Distance(x+1,y,tx,ty);cango[1]=1;}//destra
 	if(mapmat[x][y-1]!=0){distv[2]=Distance(x,y-1,tx,ty);cango[2]=1;}//sopra
 	if(mapmat[x-1][y]!=0){distv[3]=Distance(x-1,y,tx,ty);cango[3]=1;}//sinistra
+	if(x-1==0)distv[3]=0;
+	if(x+1==29)distv[1]=0;
 	for(i=0;i<4;i++) {
 	if(distv[i]>maxdir&&cango[i]==1)
 		{
