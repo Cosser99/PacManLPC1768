@@ -1,24 +1,3 @@
-/****************************************Copyright (c)****************************************************
-**                                      
-**                                 http://www.powermcu.com
-**
-**--------------File Info---------------------------------------------------------------------------------
-** File name:               main.c
-** Descriptions:            The GLCD application function
-**
-**--------------------------------------------------------------------------------------------------------
-** Created by:              AVRman
-** Created date:            2010-11-7
-** Version:                 v1.0
-** Descriptions:            The original version
-**
-**--------------------------------------------------------------------------------------------------------
-** Modified by:             Paolo Bernardi
-** Modified date:           03/01/2020
-** Version:                 v2.0
-** Descriptions:            basic program for LCD and Touch Panel teaching
-**
-*********************************************************************************************************/
 
 /* Includes ------------------------------------------------------------------*/
 #include "LPC17xx.h"
@@ -126,7 +105,9 @@ void SetPrio()
 	NVIC_SetPriority(TIMER0_IRQn,0);
 	NVIC_SetPriority(TIMER1_IRQn,0);
 	NVIC_SetPriority(TIMER3_IRQn,0);
+	#ifndef SIMULATOR
 	NVIC_SetPriority(CAN_IRQn,4);
+	#endif
 }
 int GenRandom(int max)
 {
@@ -134,23 +115,6 @@ int GenRandom(int max)
 	return rand()%max;
 }
 
-void GenSuperPill()		//DA TOGLIERE
-{
-	//x 0-30 y .. 0-40
-	int counter=NSUPERPILL;
-	do
-	{
-		int x,y;
-		x=GenRandom(MAX_X/8);
-		y=GenRandom(MAX_Y/8);
-		if(mapmat[x][y]==2)
-		{
-			mapmat[x][y]=3;
-			LCD_Drawbitmap(x*SIZEBLOCK,y*SIZEBLOCK,Red,8,bitmap_superpill);
-			counter--;
-		}
-	}while(counter !=0);
-}
 
 int main(void) 
 {
@@ -161,7 +125,9 @@ int main(void)
   SystemInit();  												/* System Initialization (i.e., PLL)  */
 	BUTTON_init();
   LCD_Initialization();
+	#ifndef SIMULATOR
 	CAN_Init();
+	#endif
 	
 	LCD_Clear(Black);
 	GUI_Text(0,0,(uint8_t*) "Game Over In:",White,Black);
@@ -175,15 +141,17 @@ int main(void)
 	ghost.y=15;
 	ghost.mode=0;
 	LCD_Drawbitmap(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,Yellow,8,bitmapcircle);
-	init_timer(0, 0x017D7840 ); 						    // 8us * 25MHz = 200 ~= 0xC8 
+	init_timer(0, 0x017D7840 ); 						    // contatore tempo
 	joystick_init();											//Joystick Initialization            
 	
-	
-	init_RIT(0x007C4B40);									// Emulatore 0x002C4B40
+	#ifdef SIMULATOR
+	init_RIT(0x002C4B40);									// Emulatore 0x002C4B40	(Impostare lo SPEEDUP 10 TIMER0 1 2 3 : 1 , RIT scaler : 1)
+	#else
+	init_RIT(0x007C4B40);									// Scheda 0x007C4B40
+	#endif
 	//init_RIT(0x003C4B40); //0x004C4B40
 	enable_RIT();													// RIT enabled												
 	enable_timer(0);
-	//GenSuperPill();
 	SetPrio();  //altrimenti non funziona bene il rit
 	
 	static uint8_t a[7]={"Lives:"};
@@ -203,6 +171,3 @@ int main(void)
   }
 }
 
-/*********************************************************************************************************
-      END FILE
-*********************************************************************************************************/

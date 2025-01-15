@@ -1,12 +1,4 @@
-/*********************************************************************************************************
-**--------------File Info---------------------------------------------------------------------------------
-** File name:           IRQ_timer.c
-** Last modified Date:  2014-09-25
-** Last Version:        V1.00
-** Descriptions:        functions to manage T0 and T1 interrupts
-** Correlated files:    timer.h
-**--------------------------------------------------------------------------------------------------------
-*********************************************************************************************************/
+
 #include <string.h>
 #include "LPC17xx.h"
 #include "timer.h"
@@ -16,15 +8,7 @@
 #include "../MapEditor/MAP.h"
 #include <stdio.h> /*for sprintf*/
 
-/******************************************************************************
-** Function name:		Timer0_IRQHandler
-**
-** Descriptions:		Timer/Counter 0 interrupt handler
-**
-** parameters:			None
-** Returned value:		None
-**
-******************************************************************************/
+
 #define VOLUME 3
 extern GINFO Session;
 extern uint16_t bitmap_pac[16];
@@ -45,13 +29,7 @@ uint16_t SinTable[45] =                                       /* ÕýÏÒ±í         
 };
 
 
-void UpdateLives()
-{
-	int i;
-	LCD_DrawBlock(50+(Session.lives)*20,300,16,Black);
-	for(i=0;i<Session.lives;i++)
-			LCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);
-}
+
 int GenRandom2(int max)
 {
 	srand(LPC_TIM1->TC^LPC_RIT->RICOUNTER^LPC_TIM0->TC);
@@ -67,12 +45,24 @@ void GameOver()
 }
 extern Player pac;
 extern Player ghost;
+#ifdef SIMULATOR
+void UpdateLives()
+{
+		//vite
+		int i;
+		LCD_DrawBlock(50+(Session.lives)*20,300,16,Black);
+		for(i=0;i<Session.lives;i++)
+			LCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);
+}
+#endif
 void Respawn()
 {
 	
-	//UpdateLives();	//Da attivare
 	Session.paused=0;
 	Session.death=0;
+	#ifdef SIMULATOR
+	UpdateLives();
+	#endif
 	mode=3;	//Animazione respawn ghost
 	LCD_DrawBlock(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,8,Blue);
 	pac.x=Session.spx;
@@ -84,6 +74,7 @@ void Respawn()
 }
 void TIMER0_IRQHandler (void)
 {
+	
 	static uint8_t dtimer=0;
 	if(dtimer>=2&&Session.death)
 	{
@@ -98,9 +89,12 @@ void TIMER0_IRQHandler (void)
 	{
 		Session.time--;
 		if(Session.time<=0) GameOver();
-//		uint8_t txt[3];
-//		sprintf(txt,"%d",Session.time);
-//		GUI_Text(100,0,txt,White,Black);		
+		#ifdef SIMULATOR
+		//tempo
+			uint8_t txttime[3];
+			sprintf(txttime,"%d",Session.time);
+			GUI_Text(100,0,txttime,White,Black);	
+		#endif		
 	}
 	if(Session.superpills>0)
 	{

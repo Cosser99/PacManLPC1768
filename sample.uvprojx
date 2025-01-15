@@ -339,7 +339,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define></Define>
+              <Define>Scheda</Define>
               <Undefine></Undefine>
               <IncludePath>.\Source;.\Source\CMSIS_core;.\Source\GLCD;.\Source\timer;.\Source\button_EXINT;.\Source\TouchPanel</IncludePath>
             </VariousControls>

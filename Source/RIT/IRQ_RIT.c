@@ -1,12 +1,4 @@
-/*********************************************************************************************************
-**--------------File Info---------------------------------------------------------------------------------
-** File name:           IRQ_RIT.c
-** Last modified Date:  2014-09-25
-** Last Version:        V1.00
-** Descriptions:        functions to manage T0 and T1 interrupts
-** Correlated files:    RIT.h
-**--------------------------------------------------------------------------------------------------------
-*********************************************************************************************************/
+
 #include "LPC17xx.h"
 #include "RIT.h"
 #include "../GLCD/GLCD.h"  //mod
@@ -15,15 +7,7 @@
 #include "../music/music.h"
 #include "../CAN/CAN.h"
 #include <stdio.h>
-/******************************************************************************
-** Function name:		RIT_IRQHandler
-**
-** Descriptions:		REPETITIVE INTERRUPT TIMER handler
-**
-** parameters:			None
-** Returned value:		None
-**
-******************************************************************************/
+
 #define UPTICKS 1
 #define GHOSTCOLOR Grey
 
@@ -194,6 +178,8 @@ void UpdateAnim() //TAG: FRAME ANIMAZIONE
 	}
 	nf=!nf;
 }
+//CAN
+#ifndef SIMULATOR				
 void Transmit()			//RECEIVE ON IRQ_CAN
 {
 	CAN_TxMsg.data[0] = Session.time;
@@ -233,6 +219,27 @@ void Receive(uint8_t lives,uint8_t time,uint16_t score)
 			LCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);
 	}
 }
+#else
+void UpdateScore()
+{
+	 uint8_t txt[15];
+	sprintf(txt,"%d",Session.score);
+	GUI_Text(150+16*3,0,txt,White,Black);
+	if(!Session.gameover)
+	{
+	if(Session.netscore>=1000)
+	{
+		Session.netscore=0;
+		Session.lives+=1;
+		int i=0;
+		for(i=0;i<Session.lives;i++)
+			LCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);
+		
+	}
+	
+	}
+}
+#endif
 
 void PlayMusic()
 {
@@ -267,8 +274,11 @@ void PlayMusic()
 
 void RIT_IRQHandler (void)
 {		
+	#ifndef SIMULATOR
 	Transmit();
-	//UpdateText2();
+	#else
+	UpdateScore();
+	#endif
 	if(!Session.gameover&&!Session.paused){
 	PlayMusic();
 	idm=2;
@@ -361,6 +371,7 @@ void RIT_IRQHandler (void)
 		uint8_t txt[16]={"VICTORY!"};
 		LCD_Clear(Black);
 		GUI_Text(MAX_X/2-20,MAX_Y/2-10,txt,White,Black);
+		GUI_Text(150,0,(uint8_t*) "SCORE:",White,Black);
 	}
 	//***********************************************
 
