@@ -32,7 +32,7 @@ uint16_t SinTable[45] =                                       /* ÕıÏÒ±í         
 
 int GenRandom2(int max)
 {
-	srand(LPC_TIM1->TC^LPC_RIT->RICOUNTER^LPC_TIM0->TC);
+	srand(LPC_TIM1->TC^LPC_RIT->RICOUNTER^LPC_TIM2->TC);
 	return rand()%max;
 }
 

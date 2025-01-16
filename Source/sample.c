@@ -28,6 +28,7 @@ extern uint16_t bitmap_pac[16];
 extern uint8_t bitmapcircle[8];
 extern uint8_t bitmap_superpill[8];
 extern uint32_t bitmap_map[NUMY];
+extern uint32_t spawnpill[NUMY];
 extern uint8_t bitmappills[8];
 extern int mapmat[MAXCASELLA][NUMY]; //mapmatrix
 extern uint32_t LASTBIT;
@@ -70,24 +71,25 @@ void ConfigMap()
 	LCD_DrawBlock(14*SIZEBLOCK,16*SIZEBLOCK,SIZEBLOCK,TRACECOLOR);
 	LCD_DrawLine(13*SIZEBLOCK,16*SIZEBLOCK+4,15*SIZEBLOCK,16*SIZEBLOCK+4,White);
 }
+
 void DrawPills()
 {
-	int i;
+	int i,j;
 	int num=NUMPILLS;
-	for(i=0;i<MAXCASELLA&&num>0;i++)
+	for(i=0;i<NUMY&&num>0;i++)
 	{
-		
-		int j;
-		for(j=0;j<NUMY&&num>0;j++)
+		uint32_t riga=spawnpill[i];
+		for(j=0;j<MAXCASELLA&&num>0+1;j++)
 		{
-			if(mapmat[i][j]==1)
+			if(riga&1)
 			{
 				//LCD_SetPoint(i*SIZEBLOCK,j*SIZEBLOCK,Yellow); pixel di riferimento
-				LCD_Drawbitmap(i*SIZEBLOCK,j*SIZEBLOCK,Red,8,bitmappills);
-				mapmat[i][j]=2;
+				LCD_Drawbitmap(j*SIZEBLOCK,i*SIZEBLOCK,Red,8,bitmappills);
+				mapmat[j][i]=2;
 				Session.pills++;
 				num--;
 			}
+			riga=riga>>1;
 		}
 	}
 }
@@ -157,6 +159,13 @@ int main(void)
 	static uint8_t a[7]={"Lives:"};
 	GUI_Text(0,300,a,White,Black);
 	LCD_Drawbitmap16(50,300,Yellow,16,bitmap_pac);
+	//Metto in pausa in modo che possa prendere un tempo casuale per lo spawn delle superpill
+	GUI_Text(MAX_X/2-25,MAX_Y/2-20,(uint8_t*)"INTO",White,Black);
+	Session.paused=1;
+	init_timer(2,0x00FFFFFF);
+	enable_timer(2);
+	
+	
 	
 	LPC_SC->PCON |= 0x1;									/* power-down	mode										*/
 	LPC_SC->PCON &= ~(0x2);						
