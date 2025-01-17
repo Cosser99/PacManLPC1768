@@ -139,7 +139,7 @@ int main(void)
 	ConfigMap();
 
 	DrawPills();
-	ghost.x=13;
+	ghost.x=30;//13 15
 	ghost.y=15;
 	ghost.mode=0;
 	LCD_Drawbitmap(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,Yellow,8,bitmapcircle);

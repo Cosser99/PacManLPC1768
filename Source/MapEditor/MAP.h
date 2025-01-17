@@ -7,7 +7,7 @@
 
 #define MAXCASELLA 30
 #define SIZEBLOCK 8
-#define NUMY 40
+#define NUMY 30
 #define NSUPERPILL 6
 
 

@@ -19,6 +19,7 @@ extern uint8_t mode;
 
 volatile uint8_t gameover=0;
 volatile uint8_t counterf=10; //10 secondi
+volatile uint8_t spawnyn=1; //aspetta 1 secondo prima di spawnare l'altra pillola
 uint16_t SinTable[45] =                                       /* ÕýÏÒ±í                       */
 {
     410, 467, 523, 576, 627, 673, 714, 749, 778,
@@ -98,10 +99,10 @@ void TIMER0_IRQHandler (void)
 	}
 	if(Session.superpills>0)
 	{
-		
-		init_timer(2,GenRandom2(0x00FFFFFF));
+		init_timer(2,GenRandom2(0x01FFFFFF));
 		LPC_TIM2->TC=0;
 		enable_timer(2);
+		spawnyn=1;
 		
 	}
 	if(mode) //10 secondi
@@ -128,16 +129,16 @@ void TIMER2_IRQHandler (void)
 
 	if(!Session.gameover&&!Session.paused&&Session.superpills>0)
 	{
-			int inserita=0;
 			int x=GenRandom2(MAXCASELLA);
 			int y=GenRandom2(NUMY);
-		if(mapmat[x][y]==2)
+		if(mapmat[x][y]==2&&spawnyn)
 			{
 				Session.superpills--;
 				mapmat[x][y]=3;
 				LCD_Drawbitmap(x*SIZEBLOCK,y*SIZEBLOCK,Red,8,bitmap_superpill);
-				inserita=1;
+				spawnyn=0;
 			}
+			LCD_SetPoint(x*SIZEBLOCK,y*SIZEBLOCK,White); //di debug
 	}
 	if(Session.superpills<=0) disable_timer(2);
 	LPC_TIM2->IR = 1;	
