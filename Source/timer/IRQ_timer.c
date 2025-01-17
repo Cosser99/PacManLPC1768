@@ -17,6 +17,7 @@ extern uint8_t bitmapcircle[8];
 extern int mapmat[MAXCASELLA][NUMY];
 extern uint8_t mode;
 
+volatile uint8_t ghostrtime=3;
 volatile uint8_t gameover=0;
 volatile uint8_t counterf=10; //10 secondi
 volatile uint8_t spawnyn=1; //aspetta 1 secondo prima di spawnare l'altra pillola
@@ -46,24 +47,12 @@ void GameOver()
 }
 extern Player pac;
 extern Player ghost;
-#ifdef SIMULATOR
-void UpdateLives()
-{
-		//vite
-		int i;
-		LCD_DrawBlock(50+(Session.lives)*20,300,16,Black);
-		for(i=0;i<Session.lives;i++)
-			LCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);
-}
-#endif
+
 void Respawn()
 {
 	
 	Session.paused=0;
 	Session.death=0;
-	#ifdef SIMULATOR
-	UpdateLives();
-	#endif
 	mode=3;	//Animazione respawn ghost
 	LCD_DrawBlock(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,8,Blue);
 	pac.x=Session.spx;
@@ -75,7 +64,8 @@ void Respawn()
 }
 void TIMER0_IRQHandler (void)
 {
-	
+	if(mode==4)ghostrtime--;		//Aspetta 3 secondi per il respawn del ghost
+	if(ghostrtime==0){ghostrtime=3;mode=3;}
 	static uint8_t dtimer=0;
 	if(dtimer>=2&&Session.death)
 	{
@@ -90,12 +80,7 @@ void TIMER0_IRQHandler (void)
 	{
 		Session.time--;
 		if(Session.time<=0) GameOver();
-		#ifdef SIMULATOR
-		//tempo
-			uint8_t txttime[3];
-			sprintf(txttime,"%d",Session.time);
-			GUI_Text(100,0,txttime,White,Black);	
-		#endif		
+
 	}
 	if(Session.superpills>0)
 	{
@@ -138,7 +123,7 @@ void TIMER2_IRQHandler (void)
 				LCD_Drawbitmap(x*SIZEBLOCK,y*SIZEBLOCK,Red,8,bitmap_superpill);
 				spawnyn=0;
 			}
-			LCD_SetPoint(x*SIZEBLOCK,y*SIZEBLOCK,White); //di debug
+			//LCD_SetPoint(x*SIZEBLOCK,y*SIZEBLOCK,White); //DEBUG ONLY
 	}
 	if(Session.superpills<=0) disable_timer(2);
 	LPC_TIM2->IR = 1;	

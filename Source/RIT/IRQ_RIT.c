@@ -80,10 +80,7 @@ void collision(uint8_t movement)
 			case 1:				//MUORE IL FANTASMA
 			Session.score+=100;
 			Session.netscore+=100;
-			mode=0;	
-			ghost.x=13;
-			ghost.y=15;
-			mode=3;		//MODALITA ANIMAZIONE
+			mode=4;
 			counterf=10;
 			break;
 		}
@@ -178,8 +175,7 @@ void UpdateAnim() //TAG: FRAME ANIMAZIONE
 	}
 	nf=!nf;
 }
-//CAN
-#ifndef SIMULATOR				
+//CAN			
 void Transmit()			//RECEIVE ON IRQ_CAN
 {
 	CAN_TxMsg.data[0] = Session.time;
@@ -187,11 +183,12 @@ void Transmit()			//RECEIVE ON IRQ_CAN
 	CAN_TxMsg.data[2] = Session.score>>8;
 	CAN_TxMsg.data[3] = Session.score&~0xFFFF0000;
 	CAN_TxMsg.len = 4;
-	CAN_TxMsg.id = 2; //trasmetti a 1 da 2
+	CAN_TxMsg.id = 2; // trasmetti da 1 a 2
 	CAN_TxMsg.format = STANDARD_FORMAT;
 	CAN_TxMsg.type = DATA_FRAME;
 	CAN_wrMsg (1, &CAN_TxMsg);               /* transmit message */
 }
+
 void Receive(uint8_t lives,uint8_t time,uint16_t score)
 {
 	 uint8_t txt[15];
@@ -219,27 +216,7 @@ void Receive(uint8_t lives,uint8_t time,uint16_t score)
 			LCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);
 	}
 }
-#else
-void UpdateScore()
-{
-	 uint8_t txt[15];
-	sprintf(txt,"%d",Session.score);
-	GUI_Text(150+16*3,0,txt,White,Black);
-	if(!Session.gameover)
-	{
-	if(Session.netscore>=1000)
-	{
-		Session.netscore=0;
-		Session.lives+=1;
-		int i=0;
-		for(i=0;i<Session.lives;i++)
-			LCD_Drawbitmap16(50+i*20,300,Yellow,16,bitmap_pac);
-		
-	}
-	
-	}
-}
-#endif
+
 
 void PlayMusic()
 {
@@ -274,11 +251,7 @@ void PlayMusic()
 
 void RIT_IRQHandler (void)
 {		
-	#ifndef SIMULATOR
 	Transmit();
-	#else
-	UpdateScore();
-	#endif
 	if(!Session.gameover&&!Session.paused){
 	PlayMusic();
 	idm=2;

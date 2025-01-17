@@ -107,9 +107,7 @@ void SetPrio()
 	NVIC_SetPriority(TIMER0_IRQn,0);
 	NVIC_SetPriority(TIMER1_IRQn,0);
 	NVIC_SetPriority(TIMER3_IRQn,0);
-	#ifndef SIMULATOR
 	NVIC_SetPriority(CAN_IRQn,4);
-	#endif
 }
 int GenRandom(int max)
 {
@@ -127,9 +125,7 @@ int main(void)
   SystemInit();  												/* System Initialization (i.e., PLL)  */
 	BUTTON_init();
   LCD_Initialization();
-	#ifndef SIMULATOR
 	CAN_Init();
-	#endif
 	
 	LCD_Clear(Black);
 	GUI_Text(0,0,(uint8_t*) "Game Over In:",White,Black);
@@ -139,18 +135,14 @@ int main(void)
 	ConfigMap();
 
 	DrawPills();
-	ghost.x=30;//13 15
+	ghost.x=13;//13 15
 	ghost.y=15;
 	ghost.mode=0;
 	LCD_Drawbitmap(pac.x*SIZEBLOCK,pac.y*SIZEBLOCK,Yellow,8,bitmapcircle);
 	init_timer(0, 0x017D7840 ); 						    // contatore tempo
 	joystick_init();											//Joystick Initialization            
 	
-	#ifdef SIMULATOR
-	init_RIT(0x002C4B40);									// Emulatore 0x002C4B40	(Impostare lo SPEEDUP 10 TIMER0 1 2 3 : 1 , RIT scaler : 1)
-	#else
 	init_RIT(0x007C4B40);									// Scheda 0x007C4B40
-	#endif
 	//init_RIT(0x003C4B40); //0x004C4B40
 	enable_RIT();													// RIT enabled												
 	enable_timer(0);

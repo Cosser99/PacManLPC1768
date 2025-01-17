@@ -30,7 +30,6 @@ void CAN_IRQHandler (void)  {
   }
 	if (icr & 2) {                         /* CAN Controller #1 meassage is transmitted */
 		// do nothing in this example
-	
 	}
 		
 	/* check CAN controller 2 */

@@ -6,8 +6,8 @@ void GM_Default(GINFO *info)
 	info->score=0;
 	info->netscore=0;
 	info->gameover=0;
-	info->spx=3;
-	info->spy=5;
+	info->spx=13;
+	info->spy=21;
 	info->time=60;
 	info->pills=0; //le conta lui
 	info->paused=0;
