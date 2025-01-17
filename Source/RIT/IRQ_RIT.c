@@ -106,7 +106,7 @@ int checkposition()
 		Session.netscore+=50;
 		Session.pills=Session.pills-1;
 		mapmat[x][y]=1;
-		if(mode!=3)
+		if(!(mode==3||mode==4))
 			mode=1;//cambia mod
 		extern uint8_t counterf;
 		counterf=10;
