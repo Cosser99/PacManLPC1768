@@ -90,7 +90,7 @@ void TIMER0_IRQHandler (void)
 		spawnyn=1;
 		
 	}
-	if(mode) //10 secondi
+	if(mode&&!Session.paused) //10 secondi
 	{
 		counterf--;
 	}
